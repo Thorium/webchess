@@ -1,3 +1,22 @@
+// $Id: isCheckMate.js,v 1.13 2010/08/14 16:57:54 sandking Exp $
+
+/*
+    This file is part of WebChess. http://webchess.sourceforge.net
+	Copyright 2010 Jonathan Evraire, Rodrigo Flores, Dadi Jonsson
+
+    WebChess is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    WebChess is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with WebChess.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 /*
 *****************************************************************************
@@ -42,7 +61,7 @@ curDir = -1;
    getNextAttacker() will currently only work when called for one situation
    (ie: one set of coords, no changes to board between calls) and as such
    should NOT be used outside of isCheckmate()
-   
+
    POSSIBLE FIXES:
    - if getNextAttacker() does not need to be nested, reseting the function
      before each call should do the trick
@@ -57,10 +76,10 @@ function getNextAttacker(targetRow, targetCol, targetColor, attackerCoords)
 	while(curDir <= 15)
 	{
 		var rowStep, colStep;
-		
+
 		/* start next direction */
 		curDir++;
-		
+
 		switch(curDir)
 		{
 			case 0:
@@ -183,7 +202,7 @@ function getNextAttacker(targetRow, targetCol, targetColor, attackerCoords)
 						{
 							attackerCoords.row = targetRow + (i * rowStep);
 							attackerCoords.col = targetCol + (i * colStep);
-						
+
 							return true;
 						}
 				}
@@ -191,17 +210,9 @@ function getNextAttacker(targetRow, targetCol, targetColor, attackerCoords)
 			}
 		}
 	}
-	
+
 	/* return true if attacker found, false otherwise */
 	return false;
-}
-
-function isInBoard(row, col)
-{
-	if ((row >= 0) && (row <= 7) && (col >= 0) && (col <= 7))
-		return true;
-	else
-		return false;
 }
 
 /* NOTE: isAttacking() assumes no piece exists between attacker and target, such is the case in getNextAttacker() */
@@ -220,27 +231,27 @@ function isAttacking(attackerPiece, attackerRow, attackerCol, attackerColor, tar
 			if ((colDiff == 1) && ((targetRow - attackerRow) == forwardDir))
 				return true;
 			break;
-			
+
 		case ROOK:
 			if ((rowDiff == 0) || (colDiff == 0))
 				return true;
 			break;
-			
+
 		case KNIGHT:
 			if (((rowDiff == 2) && (colDiff == 1)) || ((rowDiff == 1) && (colDiff == 2)))
 				return true;
 			break;
-			
+
 		case BISHOP:
 			if (rowDiff == colDiff)
 				return true;
 			break;
-			
+
 		case QUEEN:
 			if ((rowDiff == 0) || (colDiff == 0) || (rowDiff == colDiff))
 				return true;
 			break;
-			
+
 		case KING:
 			if ((rowDiff <= 1) && (colDiff <= 1))
 				return true;
@@ -261,112 +272,53 @@ function canBlockAttacker(attackerPiece, attackerRow, attackerCol, attackerColor
 	/* setup loop parameters */
 	var rowDiff = attackerRow - targetRow;
 	var colDiff = attackerCol - targetCol;
-	
+
 	var rowStep = 0;
 	if (rowDiff != 0)
 		rowStep = rowDiff / Math.abs(rowDiff);
-	
+
 	var colStep = 0;
 	if (colDiff != 0)
 		colStep = colDiff / Math.abs(colDiff);
 
 	var numSteps = Math.max(Math.abs(rowDiff), Math.abs(colDiff));
-	var ennemyDir = 1;
 	var ennemyPawn = BLACK | PAWN;
-	var friendlyPawn = attackerColor | PAWN;
-	if (attackerColor == BLACK)
+	if (attackerColor == "black")
 	{
 		ennemyPawn = WHITE | PAWN;
-		ennemyDir = -1;
 	}
 
 	/* for each square between the attacker and the target... */
 	for (var i = 1; i < numSteps; i++)
 	{
-		/* isSafe() will take into account pawns eating diagonally, which don't apply here */
-		/* so check for pawns diagonally and replace them with friendly pawns before checking */
-		/* friendly pawns are used instead of completely removing them from the board because the pawn */
-		/* might be blocking a bishop or queen from blocking the check */
-		var tmpPawnFound1 = false;
-		var tmpPawnFound2 = false;
 
-		if (isInBoard(targetRow + (i * rowStep) + ennemyDir, targetCol + (i * colStep) - 1))
-		{
-			if (DEBUG)
-				alert("canBeBlocked() -> checking for ennemy pawn at (" + (targetRow + (i * rowStep) + ennemyDir) + ", " + (targetCol + (i * colStep) - 1) + ")");
-			
-			if (board[targetRow + (i * rowStep) + ennemyDir][targetCol + (i * colStep) - 1] == ennemyPawn)
-			{
-				if (DEBUG)
-					alert("ennemy pawn found!  Removing from board...");
-				
-				board[targetRow + (i * rowStep) + ennemyDir][targetCol + (i * colStep) - 1] = friendlyPawn;
-				tmpPawnFound1 = true;
-			}
-		}
-		
-				if (isInBoard(targetRow + (i * rowStep) + ennemyDir, targetCol + (i * colStep) + 1))
-		{
-			if (DEBUG)
-				alert("canBeBlocked() -> checking for ennemy pawn at (" + (targetRow + (i * rowStep) + ennemyDir) + ", " + (targetCol + (i * colStep) + 1) + ")");
-		
-			if (board[targetRow + (i * rowStep) + ennemyDir][targetCol + (i * colStep) + 1] == ennemyPawn)
-			{
-				if (DEBUG)
-					alert("ennemy pawn found!  Removing from board...");
-			
-				board[targetRow + (i * rowStep) + ennemyDir][targetCol + (i * colStep) + 1] = friendlyPawn;
-				tmpPawnFound2 = true;
-			}
-		}
-		
-		
 		/* if a piece of the target's color can move there, the attack can be blocked */
-		/* NOTE: pawn's are a special case since isSafe would determine a pawn cannot move forward to a target square */
-		var tmpCanBlockAttacker = false;
-		if (!isSafe(targetRow + (i * rowStep), targetCol + (i * colStep), attackerColor))		
+		if(DEBUG)
 		{
-			/* if pawn's were removed from the board, replace them */
-			if (tmpPawnFound1)
-				board[targetRow + (i * rowStep) + ennemyDir][targetCol + (i * colStep) - 1] = ennemyPawn;
+			alert("Checking square (" + (targetRow + (i*rowStep)) + "," + (targetCol + (i*colStep)) + ")");
+		}
 
-			if (tmpPawnFound2)
-				board[targetRow + (i * rowStep) + ennemyDir][targetCol + (i * colStep) + 1] = ennemyPawn;
+		if (canSquareBeBlocked(targetRow + (i * rowStep), targetCol + (i * colStep), attackerColor))
+		{
+			if(DEBUG)
+			{
+				alert("canBeBlocked() -> some piece can move into (" + (targetRow + (i * rowStep)) + "," + (targetCol + (i*colStep)) + ")");
+			}
 
 			return true;
 		}
-		else if (isInBoard(targetRow + (i * rowStep) + ennemyDir, targetCol + (i * colStep)))
-		{
-			if (board[targetRow + (i * rowStep) + ennemyDir][targetCol + (i * colStep)] == ennemyPawn)
-			{
-				/* if pawn's were removed from the board, replace them */
-				if (tmpPawnFound1)
-					board[targetRow + (i * rowStep) + ennemyDir][targetCol + (i * colStep) - 1] = ennemyPawn;
 
-				if (tmpPawnFound2)
-					board[targetRow + (i * rowStep) + ennemyDir][targetCol + (i * colStep) + 1] = ennemyPawn;
-
-				return true;
-			}
-		}
-
-		/* if pawn's were removed from the board, replace them */
-		if (tmpPawnFound1)
-			board[targetRow + (i * rowStep) + ennemyDir][targetCol + (i * colStep) - 1] = ennemyPawn;
-
-		if (tmpPawnFound2)
-			board[targetRow + (i * rowStep) + ennemyDir][targetCol + (i * colStep) + 1] = ennemyPawn;
 	}
 
 	return false;
 }
 
-function isCheckMate(curColor)
+function isCheckMate(curColor, epCol)
 {
 	var kingRow = 0;
 	var kingCol = 0;
 	var targetKing = getPieceCode(curColor, "king");
-	
+
 	/* find king */
 	for (var i = 0; i < 8; i++)
 		for (var j = 0; j < 8; j++)
@@ -375,47 +327,77 @@ function isCheckMate(curColor)
 				kingRow = i;
 				kingCol = j;
 			}
-	
-	/* temporarily remove king from board */
-	board[kingRow][kingCol] = 0;
-	
-	/* check the squares around the king for a safe move */
-	/* possible bug: this doesn't take into account the king moving out of check by eating a non-attacker, like a rook diagonally */
+
+//	inform('Color:' + curColor + ' kingrow: ' + kingRow + ' kingCol:  ' + kingCol);
+	/* check the squares around the king for a safe move (including squares occupied by enemy pieces */
+	/* Note that in case of a double check this exhausts all possible moves to avoid checkmate  */
 	for (var i = -1; i <= 1; i++)
+	{ // For each row
 		for (var j = -1; j <= 1; j++)
+		{ // And for each column
 			if (((i != 0) || (j != 0)) && isInBoard(kingRow + i, kingCol + j))
-				if ((board[kingRow + i][kingCol + j] == 0) && (isSafe(kingRow + i, kingCol + j, curColor)))
-					return false;
+			{ // If the row and col is part of the board..
+				if (isValidMoveKing(kingRow, kingCol, kingRow + i, kingCol + j, curColor))	// DJ: Fixed
+				{ // If the king is safe to move
+					if (DEBUG)
+					{
+						alert("King can move into a safe square!");
+					}
+					return false; // Then it's not a check mate
+				}
+			}
+		}
+	} /* RF - Added braces for readability/reliability */
 
-	/* return king to board */
-	board[kingRow][kingCol] = targetKing;
-
+//	inform(curColor + ' king cannot move to a safe square');
 	var attackerColor = getOtherColor(curColor);
-	
-	/* for each attacker... (can be two) */
+
+	/* reset getNextAttacker function */
+	curDir = -1;
+
+	/* find the attacker(s)... (can be two) */
 	var attackerCoords = {row:0, col:0};
-	while(getNextAttacker(kingRow, kingCol, curColor, attackerCoords))
+	if (getNextAttacker(kingRow, kingCol, curColor, attackerCoords))
 	{
 		var attackerRow = attackerCoords.row;
 		var attackerCol = attackerCoords.col;
 
+		/* in case of double check (two attackers) it's checkmate.*/
+		/* There is no way to block or capture both */
+		/* (we already checked if king may move) */
+		if (getNextAttacker(kingRow, kingCol, curColor, attackerCoords))
+		{
+//			inform('Double check with checkmate');
+			return true;
+		}
+
 		/* can attacker be captured */
-		var canBeCaptured = !isSafe(attackerRow, attackerCol, attackerColor);
-		
-		/* temporarily switch king to enney pawn, otherwise canBeBlocked() things the king can block */
-		board[kingRow][kingCol] = PAWN | attackerColor;
-	
+		var isEnPrise = canBeCaptured(attackerRow, attackerCol, epCol);
+
 		/* can attacker be blocked */
 		var canBeBlocked = false;
 		if (canBlockAttacker(board[attackerRow][attackerCol], attackerRow, attackerCol, attackerColor, kingRow, kingCol))
 			canBeBlocked = true;
 
-		/* return king to board */
-		board[kingRow][kingCol] = targetKing;
-		
-		if (!canBeCaptured && !canBeBlocked)
+		if (DEBUG)
+		{
+			if(canBeBlocked)
+				alert("can be blocked");
+			else
+				alert("Can't be blocked");
+			if(isEnPrise)
+				alert("can be captured");
+			else
+				alert("Can't be captured");
+		}
+
+//		inform('isEnPrise: ' + isEnPrise + ' canBeBlocked: ' + canBeBlocked);
+		if (!isEnPrise && !canBeBlocked)
 			return true;
+	} else {
+//		inform('No attacker found');
 	}
 
+//	inform('Not checkmate');
 	return false;
 }

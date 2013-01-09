@@ -1,3 +1,16 @@
+2010-08-14 (CVS)
+- upgraded WebChess license to GPL v3
+
+
+2004-09-02 (v0.9.0):
+- display of captured pieces
+- initial stylesheet formatting
+- PHP export
+- new config setting for board size
+- new config setting to restrict the creation of new users
+- many, many bug fixes, particularly with check and checkmate detection!!!
+
+
 2003-10-20 (v0.8.4):
 - BUG FIX: fixed a bug in isCheckMate.js where array boundaries weren't being enforced and sometimes caused an invalid index javascript error
 - BUG FIX: Checkmate checking fix - by removing king from board isCheckMate() incorrectly believed pieces on the other side of the king could kill the attacking piece, so now king is replaced with ennemy pawn - Bug 753704

@@ -1,11 +1,12 @@
 +-----------+----------+------+-----+---------+----------------+
-| Field     | Type     | Null | Key | Default | Extra          |
+| Field      | Type     | Null | Key | Default | Extra          |
 +-----------+----------+------+-----+---------+----------------+
-| playerID  | int(11)  |      | PRI | NULL    | auto_increment |
-| password  | char(16) |      |     |         |                |
-| firstName | char(20) |      |     |         |                |
-| lastName  | char(20) |      |     |         |                |
-| nick      | char(20) |      | UNI |         |                |
+| playerID   | int(11)  |      | PRI | NULL    | auto_increment |
+| password   | char(16) |      |     |         |                |
+| firstName  | char(20) |      |     |         |                |
+| lastName   | char(20) |      |     |         |                |
+| nick       | char(20) |      | UNI |         |                |
+| lastAccess | datetime | YES  |     | NULL    |                |
 +-----------+----------+------+-----+---------+----------------+
 
 
@@ -14,5 +15,6 @@ CREATE TABLE players (
 	password CHAR(16) NOT NULL,
 	firstName CHAR(20) NOT NULL,
 	lastName CHAR(20) NOT NULL,
-	nick CHAR(20) NOT NULL UNIQUE
+	nick CHAR(20) NOT NULL UNIQUE,
+	lastAccess DATETIME
 );

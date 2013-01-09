@@ -1,5 +1,5 @@
 GRANT SELECT, INSERT, UPDATE, DELETE
-	ON WebChessDB.*
+	ON WebChess_DB.*
 	TO WebChessUser
 	IDENTIFIED BY 'WebChessPassword';
 

@@ -1,9 +1,31 @@
-<? /* functions for outputting to html and javascript */
+<?php
+// $Id: gui.php,v 1.13 2010/08/15 10:29:00 sandking Exp $
 
+/*
+    This file is part of WebChess. http://webchess.sourceforge.net
+	Copyright 2010 Jonathan Evraire, Rodrigo Flores
+
+    WebChess is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    WebChess is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with WebChess.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+	/* functions for outputting to html and javascript */
+	require('chess.inc');
 	function drawboard()
 	{
 		global $board, $playersColor, $numMoves;
-		
+		global $CFG_BOARDSQUARESIZE;
+
 		/* old PHP versions don't have _POST, _GET and _SESSION as auto_globals */
 		if (!minimum_version("4.1.0"))
 			global $_POST, $_GET, $_SESSION;
@@ -27,124 +49,18 @@
 		{
 			$perspective = $playersColor;
 		}
-		
+
 		/* NOTE: if both players are using the same PC, in a sense it's always the players turn */
 		if ($_SESSION['isSharedPC'])
 			$isPlayersTurn = true;
-		
+
 		/* determine if board is disabled */
 		$isDisabled = isBoardDisabled();
 
-		echo ("<table border='1'>\n");
-		if ($isDisabled)
-			echo ("<tr bgcolor='#DDDDDD'>");
-		else
-			echo ("<tr bgcolor='beige'>");
-
-		/* setup vars to show player's perspective of the board */
-		if ($perspective == "white")
-		{
-			$topRow = 7;
-			$bottomRow = 0;
-			$rowStep = -1;
-			
-			$leftCol = 0;
-			$rightCol = 7;
-			$colStep = 1;
-		}
-		else
-		{
-			$topRow = 0;
-			$bottomRow = 7;
-			$rowStep = 1;
-			
-			$leftCol = 7;
-			$rightCol = 0;
-			$colStep = -1;
-		}
-		
-		/* column headers */
-		echo ("<th>&nbsp;</th>");
-		
-		/* NOTE: end condition is ($rightCol + $colStep) since we want to output $rightCol */
-		for ($i = $leftCol; $i != ($rightCol + $colStep); $i += $colStep)
-			echo ("<th>".chr($i + 97)."</th>");
-		
-		echo ("</tr>\n");
-
-		/* for each row... */
-		/* NOTE: end condition is ($bottomRow + $rowStep) since we want to output $bottomRow */
-		for ($i = $topRow; $i != ($bottomRow + $rowStep); $i += $rowStep)
-		{
-			echo ("<tr>\n");
-			if ($isDisabled)
-				echo ("<th width='20' bgcolor='#DDDDDD'>".($i+1)."</th>\n");
-			else
-				echo ("<th width='20' bgcolor='beige'>".($i+1)."</th>\n");
-
-			/* for each col... */
-			/* NOTE: end condition is ($rightCol + $colStep) since we want to output $rightCol */
-			for ($j = $leftCol; $j != ($rightCol + $colStep); $j += $colStep)
-			{
-				echo ("   <td bgcolor='");
-
-				/* if board is disabled, show board in grayscale */
-				if ($isDisabled)
-				{
-					if (($j + ($i % 2)) % 2 == 0)
-						echo ("#444444'>");
-					else
-						echo ("#BBBBBB'>");
-				}
-				else
-				{
-					if (($j + ($i % 2)) % 2 == 0)
-						echo ("#772222'>");
-					else
-						echo ("#CCBBBB'>");
-				}
-
-				/* if disabled or not player's turn, can't click pieces */
-				if (!$isDisabled && $isPlayersTurn)
-				{
-					echo ("<a href='JavaScript:squareClicked($i, $j, ");
-					if ($board[$i][$j] == 0)
-						echo ("true)'>");
-					else
-						echo ("false)'>");
-				}
-
-				echo ("<img name='pos$i-$j' src='images/".$_SESSION['pref_theme']."/");
-
-				/* if position is empty... */
-				if ($board[$i][$j] == 0)
-				{
-					/* draw empty square */
-					$tmpALT="blank";
-				}
-				else
-				{
-					/* draw correct piece */
-					if ($board[$i][$j] & BLACK)
-						$tmpALT = "black_";
-					else
-						$tmpALT = "white_";
-
-					$tmpALT .= getPieceName($board[$i][$j]);
-				}
-
-				echo($tmpALT.".gif' height='50' width='50' border='0' alt='".$tmpALT."'>");
-				
-				if (!$isDisabled && $isPlayersTurn)
-					echo ("</a>");
-				
-				echo ("</td>\n");
-			}
-
-			echo ("</tr>\n");
-		}
-
-		echo ("</table>\n\n");
+		echo ("var isBoardDisabled = '" . $isDisabled . "';\n");
+		echo ("var isPlayersTurn = '" . $isPlayersTurn . "';\n");
+		echo ("var perspective = '" . $perspective . "';\n");
+		echo ("var squareSize = " . $CFG_BOARDSQUARESIZE . ";\n");
 	}
 
 	function writeJSboard()
@@ -154,7 +70,7 @@
 		/* old PHP versions don't have _POST, _GET and _SESSION as auto_globals */
 		if (!minimum_version("4.1.0"))
 			global $_POST, $_GET, $_SESSION;
-		
+
 		/* write out constants */
 		echo ("var DEBUG = ".DEBUG.";\n");
 
@@ -168,18 +84,25 @@
 		echo ("var BLACK = ".BLACK.";\n");
 		echo ("var WHITE = ".WHITE.";\n");
 		echo ("var COLOR_MASK = ".COLOR_MASK.";\n");
-		
+
 		/* write code for array */
-		echo ("var board = new Array();\n");
+		echo ("var board = [");
 		for ($i = 0; $i < 8; $i++)
 		{
-			echo ("board[$i] = new Array();\n");
-
+			echo ("\n[");
 			for ($j = 0; $j < 8; $j++)
 			{
-				echo ("board[$i][$j] = ".$board[$i][$j].";\n");
+				echo ($board[$i][$j]);
+				if($j < 7)
+					echo (', ');
+			}
+			echo ("]");
+			if($i < 7)
+			{
+				echo (",");
 			}
 		}
+		echo "];\n";
 
 		echo("var numMoves = $numMoves;\n");
 		echo("var errMsg = '';\n");	/* global var used for error messages */
@@ -198,159 +121,132 @@
 		echo ("var FROMCOL = 3;\n");
 		echo ("var TOROW = 4;\n");
 		echo ("var TOCOL = 5;\n");
-		
+		echo ("var PROMOTEDTO = 6;\n");
+
 		/* write code for array */
-		echo ("var chessHistory = new Array();\n");
+		echo ("var chessHistory = [");
 		for ($i = 0; $i <= $numMoves; $i++)
 		{
-			echo ("chessHistory[$i] = new Array();\n");
-			echo ("chessHistory[$i][CURPIECE] = '".$history[$i]['curPiece']."';\n");
-			echo ("chessHistory[$i][CURCOLOR] = '".$history[$i]['curColor']."';\n");
-			echo ("chessHistory[$i][FROMROW] = ".$history[$i]['fromRow'].";\n");
-			echo ("chessHistory[$i][FROMCOL] = ".$history[$i]['fromCol'].";\n");
-			echo ("chessHistory[$i][TOROW] = ".$history[$i]['toRow'].";\n");
-			echo ("chessHistory[$i][TOCOL] = ".$history[$i]['toCol'].";\n");
+			if($i % 4 == 0) // Four moves on each line
+				echo("\n");
+			echo ("['".$history[$i]['curPiece']."', ");
+			echo ("'".$history[$i]['curColor']."', ");
+			echo ($history[$i]['fromRow'].", ");
+			echo ($history[$i]['fromCol'].", ");
+			echo ($history[$i]['toRow'].", ");
+			echo ($history[$i]['toCol']);
+			if($history[$i]['promotedTo'] != '')
+			{
+				echo (", '".$history[$i]['promotedTo']."'");
+			}
+			echo ("]");
+			if($i < $numMoves)
+			{
+				echo (",");
+			}
 		}
-}
-	
+		echo "];\n";
+	}
+
 	function writeVerbousHistory()
 	{
 		global $history, $numMoves;
 
-		echo ("<table width='300' border='1'>\n");
-		echo ("<tr><th bgcolor='beige' colspan='2'>HISTORY</th></tr>\n");
-
-		for ($i = $numMoves; $i >= 0; $i--)
+		for ($i = 0; $i <= $numMoves; $i++)
 		{
-			if ($i % 2 == 1)
-			{
-				echo ("<tr bgcolor='black'>");
-				echo ("<td width='20'><font color='white'>".($i + 1)."</font></td><td><font color='white'>");
-			}
-			else
-			{
-				echo ("<tr bgcolor='white'>");
-				echo ("<td width='20'>".($i + 1)."</td><td><font color='black'>");
-			}
-
 			$tmpReplaced = "";
 			if (!is_null($history[$i]['replaced']))
 				$tmpReplaced = $history[$i]['replaced'];
-			
+
 			$tmpPromotedTo = "";
 			if (!is_null($history[$i]['promotedTo']))
 				$tmpPromotedTo = $history[$i]['promotedTo'];
 
 			$tmpCheck = ($history[$i]['isInCheck'] == 1);
-			
-			echo(moveToVerbousString($history[$i]['curColor'], $history[$i]['curPiece'], $history[$i]['fromRow'], $history[$i]['fromCol'], $history[$i]['toRow'], $history[$i]['toCol'], $tmpReplaced, $tmpPromotedTo, $tmpCheck));
-			
-			echo ("</font></td></tr>\n");
+
+			$moves[$i/2][$i & 1] = moveToVerbousString($history[$i]['curColor'], $history[$i]['curPiece'], $history[$i]['fromRow'], $history[$i]['fromCol'], $history[$i]['toRow'], $history[$i]['toCol'], $tmpReplaced, $tmpPromotedTo, $tmpCheck);
 		}
-		
-		echo ("<tr bgcolor='#BBBBBB'><td>0</td><td>New Game</td></tr>\n");
-		echo ("</table>\n");
+
+		return $moves;
 	}
 
 	function writeHistoryPGN()
 	{
 		global $history, $numMoves;
 
-		echo ("<table border='1'>\n");
-		echo ("<tr><th bgcolor='beige' colspan='3'>HISTORY</th></tr>\n");
-		echo ("<tr><th bgcolor='#BBBBBB' width='50'>Move</th>");
-		echo ("<th bgcolor='white' width='80'><font color='black'>White</font></th>");
-		echo ("<th bgcolor='black' width='80'><font color='white'>Black</font></th></tr>\n");
-
-		for ($i = 0; $i <= $numMoves; $i+=2)
+		for ($i = 0; $i <= $numMoves; $i++)
 		{
-			echo ("<tr><td align='center' bgcolor='#BBBBBB'>".(($i/2) + 1)."</td><td bgcolor='white' align='center'><font color='black'>");
-
 			$tmpReplaced = "";
 			if (!is_null($history[$i]['replaced']))
 				$tmpReplaced = $history[$i]['replaced'];
-			
+
 			$tmpPromotedTo = "";
 			if (!is_null($history[$i]['promotedTo']))
 				$tmpPromotedTo = $history[$i]['promotedTo'];
 
 			$tmpCheck = ($history[$i]['isInCheck'] == 1);
-			
-			echo(moveToPGNString($history[$i]['curColor'], $history[$i]['curPiece'], $history[$i]['fromRow'], $history[$i]['fromCol'], $history[$i]['toRow'], $history[$i]['toCol'], $tmpReplaced, $tmpPromotedTo, $tmpCheck));
 
-			echo ("</font></td><td bgcolor='black' align='center'><font color='white'>");
-
-			if ($i == $numMoves)
-				echo ("&nbsp;");
-			else
-			{
-				$tmpReplaced = "";
-				if (!is_null($history[$i+1]['replaced']))
-					$tmpReplaced = $history[$i+1]['replaced'];
-			
-				$tmpPromotedTo = "";
-				if (!is_null($history[$i+1]['promotedTo']))
-					$tmpPromotedTo = $history[$i+1]['promotedTo'];
-
-				$tmpCheck = ($history[$i+1]['isInCheck'] == 1);
-			
-				echo(moveToPGNString($history[$i+1]['curColor'], $history[$i+1]['curPiece'], $history[$i+1]['fromRow'], $history[$i+1]['fromCol'], $history[$i+1]['toRow'], $history[$i+1]['toCol'], $tmpReplaced, $tmpPromotedTo, $tmpCheck));
-			}
-			
-			echo ("</font></td></tr>\n");
+			$moves[$i/2][$i & 1] = moveToPGNString($history[$i]['curColor'], $history[$i]['curPiece'], $history[$i]['fromRow'], $history[$i]['fromCol'], $history[$i]['toRow'], $history[$i]['toCol'], $tmpReplaced, $tmpPromotedTo, $tmpCheck);
 		}
-		
-		echo ("</table>\n");
-		
+
+		return $moves;
 	}
 
 	function writeHistory()
 	{
+		global $numMoves;
+
 		/* old PHP versions don't have _POST, _GET and _SESSION as auto_globals */
 		if (!minimum_version("4.1.0"))
 			global $_POST, $_GET, $_SESSION;
-		
+
 		/* based on player's preferences, display the history */
+		$moves  = array();	// Make sure that $moves is defined
 		switch($_SESSION['pref_history'])
 		{
 			case 'verbous':
-				writeVerbousHistory();
+				$moves = writeVerbousHistory();
 				break;
-			
+
 			case 'pgn':
-				writeHistoryPGN();
+				$moves = writeHistoryPGN();
 				break;
 		}
+
+		$comma = '';
+		echo("var moves = [");
+		for ($i = 0; $i < count($moves); $i++)
+		{
+			echo($comma);
+			if($i % 4 == 0) // Four moves on each line
+				echo("\n");
+			echo ("['" . $moves[$i][0]."', '".$moves[$i][1]."']");
+			$comma = ', ';
+		}
+		echo("];\n");
 	}
 
 	function writeStatus()
 	{
 		global $numMoves, $history, $isCheckMate, $statusMessage, $isPlayersTurn;
 
-		?>
-		<table border="1" width="300" align="center">
-		<tr bgcolor="beige">
-			<th>
-			STATUS - 
-			<? if ($isPlayersTurn) echo ("Your Move"); else echo("Opponent's Move"); ?>
-			</th>
-		</tr>
-
-		<tr>
-		<?
 		if (($numMoves == -1) || ($numMoves % 2 == 1))
 			$curColor = "White";
 		else
 			$curColor = "Black";
 
-		if (!$isCheckMate && ($history[$numMoves]['isInCheck'] == 1))
-			echo("<td align='center' bgcolor='red'>\n<b>".$curColor." is currently in check!</b><br>\n".$statusMessage."</td>\n");
+		if ($_SESSION['isSharedPC'])
+			echo ("var whosMove = '$curColor\'s Turn';\n");
+		elseif ($isPlayersTurn)
+			echo ("var whosMove = 'Your Turn';\n");
 		else
-			echo("<td>".$statusMessage."&nbsp;</td>\n");
-		?>
-		</tr>
-		</table>
-		<?
+			echo("var whosMove = 'Opponent\'s Turn';\n");
+
+		echo("var checkMsg = '");
+		if (!$isCheckMate && ($history[$numMoves]['isInCheck'] == 1))
+			echo($curColor." is currently in check!");
+		echo("';\n");
+		echo("var statusMessage = '".$statusMessage."';\n");
 	}
 
 	function writePromotion()
@@ -361,15 +257,15 @@
 		<tr><td>
 			Promote pawn to:
 			<br>
-			<input type="radio" name="promotion" value="<? echo (QUEEN); ?>" checked="checked"> Queen
-			<input type="radio" name="promotion" value="<? echo (ROOK); ?>"> Rook
-			<input type="radio" name="promotion" value="<? echo (KNIGHT); ?>"> Knight
-			<input type="radio" name="promotion" value="<? echo (BISHOP); ?>"> Bishop
+			<input type="radio" name="promotion" value="<?php echo (QUEEN); ?>" checked="checked"> Queen
+			<input type="radio" name="promotion" value="<?php echo (ROOK); ?>"> Rook
+			<input type="radio" name="promotion" value="<?php echo (KNIGHT); ?>"> Knight
+			<input type="radio" name="promotion" value="<?php echo (BISHOP); ?>"> Bishop
 			<input type="button" name="btnPromote" value="Promote" onClick="promotepawn()" />
 		</td></tr>
 		</table>
 		</p>
-	<?
+	<?php
 	}
 
 	function writeUndoRequest()
@@ -387,7 +283,7 @@
 		</td></tr>
 		</table>
 		</p>
-	<?
+	<?php
 	}
 
 	function writeDrawRequest()
@@ -405,6 +301,133 @@
 		</td></tr>
 		</table>
 		</p>
-	<?
+	<?php
+	}
+
+	function writePGN()
+	{
+		require 'connectdb.php';
+		global $_SESSION, $history, $numMoves,$pWhite,$pWhiteF,$pWhiteL,$pBlack,$pBlackF,$pBlackL,$gStart;
+		global $simplemove,$isDraw,$move_turn,$move_PlyNumber;
+		$FEN="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+		set_FEN($FEN);
+		#get_current_Position();
+		#return;
+		$xheader ="[Event \"WebChess Board #{$_SESSION['gameID']}\"]\n";
+                $xheader .="[Site \"WebChess\"]\n";
+                $xheader .="[Date \"$gStart\"]\n";
+                $xheader .="[Round \"-\"]\n";
+                $xheader .="[White \"$pWhiteL, $pWhiteF\"]\n";
+                $xheader .="[Black \"$pBlackL, $pBlackF\"]\n";
+		$body = "";
+		$bodyLine = "";
+		for ($i = 0; $i <= $numMoves; $i+=2)
+		{
+			// White's move
+			$token = "".(($i/2)+1).".";
+			if(strlen($bodyLine) + strlen($token) > 79)
+			{
+				$body .= $bodyLine . "\n";
+				$bodyLine = "";
+			}
+			elseif(strlen($bodyLine) > 0)
+			{
+				$bodyLine .= " ";
+			}
+			$bodyLine .= $token;
+			$tmpPromotedTo = "";
+			if (!is_null($history[$i]['promotedTo']))
+				$tmpPromotedTo = $history[$i]['promotedTo'];
+
+			$tmpCheck = ($history[$i]['isInCheck'] == 1);
+
+			$fr=$history[$i]['fromRow'];
+			$fc=$history[$i]['fromCol'];
+			$tr=$history[$i]['toRow'];
+			$tc=$history[$i]['toCol'];
+			$fs=coordsToSquare($fr,$fc);
+			$ts=coordsToSquare($tr,$tc);
+			#echo "<hr>Adding Move:$fs-$ts$tmpPromotedTo<hr>";
+			add_Move("$fs-$ts".getPGNCode($tmpPromotedTo));
+			#echo get_current_Position();
+			$token = $simplemove;
+			if(strlen($bodyLine) + strlen($token) > 79)
+			{
+				$body .= $bodyLine . "\n";
+				$bodyLine = "";
+			}
+			elseif(strlen($bodyLine) > 0)
+			{
+				$bodyLine .= " ";
+			}
+			$bodyLine .= $token;
+			if ($i != $numMoves)
+			{	// Black's move
+				$tmpPromotedTo = "";
+				if (!is_null($history[$i+1]['promotedTo']))
+					$tmpPromotedTo = $history[$i+1]['promotedTo'];
+
+				$tmpCheck = ($history[$i+1]['isInCheck'] == 1);
+
+				$fr=$history[$i+1]['fromRow'];
+				$fc=$history[$i+1]['fromCol'];
+				$tr=$history[$i+1]['toRow'];
+				$tc=$history[$i+1]['toCol'];
+				$fs=coordsToSquare($fr,$fc);
+				$ts=coordsToSquare($tr,$tc);
+				#echo "<hr>Adding Move:$fs-$ts$tmpPromotedTo<hr>";
+				add_Move("$fs-$ts".getPGNCode($tmpPromotedTo));
+				#echo get_current_Position();
+			$token = $simplemove;
+			if(strlen($bodyLine) + strlen($token) > 79)
+			{
+				$body .= $bodyLine . "\n";
+				$bodyLine = "";
+			}
+			elseif(strlen($bodyLine) > 0)
+			{
+				$bodyLine .= " ";
+			}
+			$bodyLine .= $token;
+			}
+		}
+
+		/* getResult() returns only definitive wins and remis.
+		 * If a player resigns, this is not reflected in it, so we need to check
+		 */
+		$result=getResult();
+		if($isDraw){
+			$result="1/2-1/2";
+		};
+
+		$tmpQuery = "SELECT gameMessage, messageFrom FROM " . $CFG_TABLE[games] . " WHERE gameID = ".$_SESSION['gameID'];
+		$tmpMessages = mysql_query($tmpQuery);
+		$tmpMessage = mysql_fetch_array($tmpMessages, MYSQL_ASSOC);
+
+		if ($tmpMessage['gameMessage'] == "playerResigned")
+		{
+			if ( $tmpMessage['messageFrom'] == "white" )
+			{
+				$result = "0-1";
+			}
+			else
+			{
+				$result = "1-0";
+			}
+		}
+
+		$body .= $bodyLine;
+		if(strlen($bodyLine) + strlen($result) > 79)
+		{
+			$body .= "\n";
+		}
+		elseif(strlen($bodyLine) > 0)
+		{
+			$body .= " ";
+		}
+		$body.= $result . "\n\n";
+		$xheader .="[Result \"$result\"]\n\n";
+		echo ($xheader);
+		echo ($body);
 	}
 ?>
