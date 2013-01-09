@@ -1,3 +1,7 @@
+2013-01-03 (unofficial version - https://github.com/Thorium/webchess )
+- user interface appearance changes
+- watch also other players' games
+
 2010-08-14 (CVS)
 - upgraded WebChess license to GPL v3
 

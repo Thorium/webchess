@@ -91,7 +91,9 @@
 						?>
 					</div>
                                         <div class="inputlabel"><?php echo gettext("Password");?></div>
-					<div><input name="pwdPassword" type="password" class="inputbox" /></div>
+					<div>
+						As the security is not very good, please don't use this password anywhere else!
+						<input name="pwdPassword" type="password" class="inputbox" /></div>
                                         <div class="inputlabel"><?php echo gettext("Password Confirmation");?></div>
 					<div><input name="pwdPassword2" type="password" class="inputbox" /></div>
                                         <h1><?php echo gettext("Personal preferences");?></h1>

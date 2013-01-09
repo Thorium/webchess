@@ -19,16 +19,20 @@
 
 	$_CONFIG = true;
 
-	/* database settings */
+    /* database settings */
 	$CFG_SERVER = "localhost";
 	$CFG_USER = "WebChessUser";
-	$CFG_PASSWORD = "WebChessPassword";
+	$CFG_PASSWORD = "12345"; //change at least this!
 	$CFG_DATABASE = "WebChess_DB";
 
+    //better to move the database settings to somewhere else than www-root
+	//require '/www/include/webchess-db.inc';
+
+    
 	/* server settings */
 	$CFG_SESSIONTIMEOUT = 900;		/* session times out if user doesn't interact after 900 secs (15 mins) */
-	$CFG_EXPIREGAME = 14;			/* number of days before untouched games expire */
-	$CFG_MINAUTORELOAD = 5;			/* min number of secs between automatic reloads reloads */
+	$CFG_EXPIREGAME = 90;			/* number of days before untouched games expire */
+	$CFG_MINAUTORELOAD = 10;			/* min number of secs between automatic reloads reloads */
 						/* email notification requires PHP to be properly configured for */
 	/* NOTE: in chessutils.php a line is commented containing:
 	$headers .= "To: ".$msgTo."\r\n";
@@ -41,8 +45,8 @@
 	/* This URL is displayed in the email notices */
 	$CFG_MAINPAGE = "http://webchess.sourceforge.net/webchess/";
 
-	$CFG_MAXUSERS = 50;
-	$CFG_MAXACTIVEGAMES = 50;
+	$CFG_MAXUSERS = 5000;
+	$CFG_MAXACTIVEGAMES = 10000;
 	$CFG_NICKCHANGEALLOWED = false;		/* whether a user can change their nick from the main menu */
 
 	$CFG_NEW_USERS_ALLOWED = true;

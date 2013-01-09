@@ -203,7 +203,7 @@
 						$defaultValue = "columns";
 						break;
 					case 'theme':
-						$defaultValue = "beholder";
+						$defaultValue = "gnuchess_simple";
 						break;
 					case 'autoreload':
 						$defaultValue = $CFG_MINAUTORELOAD;
@@ -374,6 +374,9 @@
 			break;
 
 		case 'UpdatePrefs':
+        
+            $_SESSION['replyAll']=$_POST['replyAll'];
+            
 			/* Theme */
 			$tmpQuery = "UPDATE " . $CFG_TABLE[preferences] . " SET value = '".$_POST['rdoTheme']."' WHERE playerID = ".$_SESSION['playerID']." AND preference = 'theme'";
 			mysql_query($tmpQuery);
@@ -641,12 +644,22 @@
 					<div class="inputlabel">Theme</div>
 					<div class="inputbox"><select name="rdoTheme">
 					<?php
-						if ($_SESSION['pref_theme'] == 'beholder')
+						if ($_SESSION['pref_theme'] == 'master')
+						{
+					?>
+							<option value="beholder"><?php echo gettext("Beholder");?></option>
+							<option value="gnuchess_fancy"><?php echo gettext("GNU Chess Fancy");?></option>
+							<option value="gnuchess_simple"><?php echo gettext("GNU Chess Simple");?></option>
+							<option value="master" selected="selected"><?php echo gettext("Master");?></option>
+					<?php
+						}
+						elseif ($_SESSION['pref_theme'] == 'beholder')
 						{
 					?>
 							<option value="beholder" selected="selected"><?php echo gettext("Beholder");?></option>
 							<option value="gnuchess_fancy"><?php echo gettext("GNU Chess Fancy");?></option>
 							<option value="gnuchess_simple"><?php echo gettext("GNU Chess Simple");?></option>
+							<option value="master"><?php echo gettext("Master");?></option>
 					<?php
 						}
 						elseif ($_SESSION['pref_theme'] == 'gnuchess_fancy')
@@ -655,6 +668,7 @@
 							<option value="beholder"><?php echo gettext("Beholder");?></option>
 							<option value="gnuchess_fancy" selected="selected"><?php echo gettext("GNU Chess Fancy");?></option>
 							<option value="gnuchess_simple"><?php echo gettext("GNU Chess Simple");?></option>
+							<option value="master"><?php echo gettext("Master");?></option>
 					<?php
 						}
 						else
@@ -663,9 +677,19 @@
 							<option value="beholder"><?php echo gettext("Beholder");?></option>
 							<option value="gnuchess_fancy"><?php echo gettext("GNU Chess Fancy");?></option>
 							<option value="gnuchess_simple" selected="selected"><?php echo gettext("GNU Chess Simple");?></option>
+							<option value="master"><?php echo gettext("Master");?></option>
 					<?php	}
 					?>
 					</select></div>
+					<div class="inputlabel">
+					<table>
+					<tr><td>Beholder</td><td><img src="images/beholder/white_king.png" alt="King" /></td><td><img src="images/beholder/white_knight.png" alt="Knight" /></td><td><img src="images/beholder/white_pawn.png" alt="Pawn" /></td></tr>
+					<tr><td>GNU Chess Fancy</td><td><img src="images/gnuchess_fancy/white_king.png" alt="King" /></td><td><img src="images/gnuchess_fancy/white_knight.png" alt="Knight" /></td><td><img src="images/gnuchess_fancy/white_pawn.png" alt="Pawn" /></td></tr>
+					<tr><td>GNU Chess Simple</td><td><img src="images/gnuchess_simple/white_king.png" alt="King" /></td><td><img src="images/gnuchess_simple/white_knight.png" alt="Knight" /></td><td><img src="images/gnuchess_simple/white_pawn.png" alt="Pawn" /></td></tr>
+					<tr><td>Master</td><td><img src="images/master/white_king.png" alt="King" /></td><td><img src="images/master/white_knight.png" alt="Knight" /></td><td><img src="images/master/white_pawn.png" alt="Pawn" /></td></tr>
+					</table>
+					</div>
+					<br/>
                                         <div class="inputlabel"><?php echo gettext("Auto-reload") . " (" . gettext("min: ") . ($CFG_MINAUTORELOAD) . " " . gettext("secs") . ")";?></div>
 					<div><input type="text" class="inputbox" name="txtReload" value="<?php echo ($_SESSION['pref_autoreload']); ?>" /></div>
 					<?php if ($CFG_USEEMAILNOTIFICATION) { ?>
@@ -676,6 +700,28 @@
                                                         <input type="button" class="button" name="btnTestEmailNotification" value="<?php echo gettext("Test Email");?>" onclick="testEmail()" />
 						<?php } ?>
 					<?php } ?>
+                    
+                    					<div class="inputlabel">Replay</div>
+					<div class="inputbox"><select name="replyAll">
+					<?php
+						if (isset($_SESSION['replyAll']) && $_SESSION['replyAll'] == 'true')
+						{
+					?>
+							<option value="false"><?php echo gettext("Show just my games");?></option>
+							<option value="true" selected="selected"><?php echo gettext("Show also games by others");?></option>
+					<?php
+						}
+						else
+						{
+					?>
+							<option value="false" selected="selected"><?php echo gettext("Show just my games");?></option>
+							<option value="true"><?php echo gettext("Show also games by others");?></option>
+					<?php	}
+					?>
+					</select>
+                    To make this software faster, this setting is not stored. You have to set it per session.
+                    </div>
+                    
                                         <input type="submit" class="button" value="<?php echo gettext("Update");?>" />
 					<input type="hidden" class="button" name="ToDo" value="UpdatePrefs" />
 				</div>
@@ -1126,6 +1172,7 @@
 				<div class="form-block">
                                         <h1><?php echo gettext("View finished games");?></h1>
                                                 <div class="inputlabel"><?php echo gettext("Select a game to view");?></div>
+                                                
 						<table>
 						<thead>
 						  <tr>
@@ -1144,7 +1191,17 @@
 						</thead>
 						<tbody id="finishedTblBdy">
 <?php
-	$tmpGames = mysql_query("SELECT * FROM " . $CFG_TABLE[games] . " WHERE (gameMessage <> '' AND gameMessage <> 'playerInvited' AND gameMessage <> 'inviteDeclined') AND (whitePlayer = ".$_SESSION['playerID']." OR blackPlayer = ".$_SESSION['playerID'].") ORDER BY lastMove DESC");
+
+    if (isset($_SESSION['replyAll']) && $_SESSION['replyAll'] == 'true')
+    {
+        $mygames = "";
+    }
+    else
+    {
+        $mygames = "AND (whitePlayer = ".$_SESSION['playerID']." OR blackPlayer = ".$_SESSION['playerID'].")";
+	}
+
+    $tmpGames = mysql_query("SELECT * FROM " . $CFG_TABLE[games] . " WHERE (gameMessage <> '' AND gameMessage <> 'playerInvited' AND gameMessage <> 'inviteDeclined') ".$mygames." ORDER BY lastMove DESC");
 
 	if (mysql_num_rows($tmpGames) == 0)
             echo("<tr><td colspan=\"6\">" . gettext("You do not currently have any games in progress") . "</td></tr>\n");
@@ -1235,6 +1292,7 @@
 		</div>
 	</div>
 </div>
+
 </div>
 </div>
 </body>

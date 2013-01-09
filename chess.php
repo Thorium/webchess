@@ -125,6 +125,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 <meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="Page-Exit" content="blendTrans(Duration=0.18)">
 <link rel="stylesheet" href="chess.css" type="text/css" />
 <?php
 	echo("<link rel='stylesheet' href='images/");
@@ -193,6 +194,7 @@ if(!isBoardDisabled() || $_SESSION['isSharedPC'])
 	<div id="header">
 	  <div id="heading">WebChess</div>
 	</div>
+    <?php require 'info.php'; ?>
 	<div id="boardsection" align="center">
 		<form name="gamedata" method="post" action="chess.php">
 		<?php
