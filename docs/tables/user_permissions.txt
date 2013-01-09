@@ -1,0 +1,6 @@
+GRANT SELECT, INSERT, UPDATE, DELETE
+	ON WebChessDB.*
+	TO WebChessUser
+	IDENTIFIED BY 'WebChessPassword';
+
+NOTE: remember to reload the permissions!
