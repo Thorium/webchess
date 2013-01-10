@@ -107,6 +107,10 @@
 			$tmpQuery = "INSERT INTO " . $CFG_TABLE[preferences] . " (playerID, preference, value) VALUES (".$_SESSION['playerID'].", 'theme', '".$_POST['rdoTheme']."')";
 			mysql_query($tmpQuery);
 
+            /* set Theme preference */
+			$tmpQuery = "INSERT INTO " . $CFG_TABLE[preferences] . " (playerID, preference, value) VALUES (".$_SESSION['playerID'].", 'replayall', '".$_POST['replayAll']."')";
+			mysql_query($tmpQuery);
+            
 			/* set auto-reload preference */
 			if (is_numeric($_POST['txtReload']))
 			{
@@ -142,6 +146,7 @@
 				$_SESSION['firstName'] = $tmpPlayer['firstName'];
 				$_SESSION['lastName'] = $tmpPlayer['lastName'];
 				$_SESSION['nick'] = $tmpPlayer['nick'];
+				$_SESSION['userLevel'] = $tmpPlayer['userlevel'];
 			}
 			else {
 				echo "<script>alert('Invalid Nick or Password. Please try again'); window.location.replace('index.php');</script>\n";
@@ -157,6 +162,7 @@
 			$isPreferenceFound['theme'] = false;
 			$isPreferenceFound['autoreload'] = false;
 			$isPreferenceFound['emailnotification'] = false;
+			$isPreferenceFound['replayall'] = false;
 
 			while($tmpPreference = mysql_fetch_array($tmpPreferences, MYSQL_ASSOC))
 			{
@@ -165,6 +171,7 @@
 					case 'history':
 					case 'historylayout':
 					case 'theme':
+					case 'replayall':
 						/* setup SESSION var of name pref_PREF, like pref_history */
 						$_SESSION['pref_'.$tmpPreference['preference']] = $tmpPreference['value'];
 						break;
@@ -204,6 +211,9 @@
 						break;
 					case 'theme':
 						$defaultValue = "gnuchess_simple";
+						break;
+					case 'replayall':
+						$defaultValue = "false";
 						break;
 					case 'autoreload':
 						$defaultValue = $CFG_MINAUTORELOAD;
@@ -375,8 +385,6 @@
 
 		case 'UpdatePrefs':
         
-            $_SESSION['replyAll']=$_POST['replyAll'];
-            
 			/* Theme */
 			$tmpQuery = "UPDATE " . $CFG_TABLE[preferences] . " SET value = '".$_POST['rdoTheme']."' WHERE playerID = ".$_SESSION['playerID']." AND preference = 'theme'";
 			mysql_query($tmpQuery);
@@ -407,10 +415,42 @@
 				mysql_query($tmpQuery);
 			}
 
+            /* User level */
+			if (is_numeric($_POST['userLevel']))
+			{
+                $userleveltxt = "";
+                switch ($_POST['userLevel']) {
+                case '0':
+                    break;
+                case '1':
+                    $userleveltxt =  "(Novice)";
+                    break;
+                case '2':
+                    $userleveltxt =  "(Occasional)";
+                    break;
+                case '3':
+                    $userleveltxt =  "(Hobbyist)";
+                    break;
+                case '4':
+                    $userleveltxt =  "(Expert)";
+                    break;
+                case '5':
+                    $userleveltxt =  "(Master)";
+                    break;            
+                $tmpQuery = "UPDATE " . $CFG_TABLE[players] . " SET userlevel = '".$userleveltxt."' WHERE playerID = ".$_SESSION['playerID'];
+                mysql_query($tmpQuery);
+            }
+            
+            /* Replay all */
+			$tmpQuery = "UPDATE " . $CFG_TABLE[preferences] . " SET value = '".$_POST['replayAll']."' WHERE playerID = ".$_SESSION['playerID']." AND preference = 'replayall'";
+			mysql_query($tmpQuery);
+
 			/* update current session */
 			$_SESSION['pref_history'] = $_POST['rdoHistory'];
 			$_SESSION['pref_historylayout'] = $_POST['rdoHistorylayout'];
 			$_SESSION['pref_theme'] =  $_POST['rdoTheme'];
+            $_SESSION['pref_replayall']=$_POST['replayAll'];
+            $_SESSION['userLevel']=$_POST['userLevel'];
 
 			if (is_numeric($_POST['txtReload']))
 			{
@@ -701,10 +741,10 @@
 						<?php } ?>
 					<?php } ?>
                     
-                    					<div class="inputlabel">Replay</div>
-					<div class="inputbox"><select name="replyAll">
+                    <div class="inputlabel">Replay</div>
+					<div class="inputbox"><select name="replayAll">
 					<?php
-						if (isset($_SESSION['replyAll']) && $_SESSION['replyAll'] == 'true')
+						if (isset($_SESSION['pref_replayall']) && $_SESSION['pref_replayall'] == 'true')
 						{
 					?>
 							<option value="false"><?php echo gettext("Show just my games");?></option>
@@ -719,7 +759,69 @@
 					<?php	}
 					?>
 					</select>
-                    To make this software faster, this setting is not stored. You have to set it per session.
+                    </div>
+
+                    <div class="inputlabel">User level</div>
+                    Just informative user level for opponents. ELO-rankings are suggestive.
+					<div class="inputbox"><select name="userLevel">
+					<?php
+						if (!isset($_SESSION['userLevel']) || $_SESSION['userLevel'] == '0')
+						{	?>
+							<option value="0" selected="selected"><?php echo gettext("(Unknown)");?></option>
+							<option value="1"><?php echo gettext("Novice (...-1200)");?></option>
+							<option value="2"><?php echo gettext("Occasional (1200-1800)");?></option>
+							<option value="3"><?php echo gettext("Hobbyist (1800-2000)");?></option>
+							<option value="4"><?php echo gettext("Expert (2000-2200)");?></option>
+							<option value="5"><?php echo gettext("Master (2200-...)");?></option>
+                            <?php	
+                        } else if ($_SESSION['userLevel'] == '1'){
+						{	?>
+							<option value="0"><?php echo gettext("(Unknown)");?></option>
+							<option value="1" selected="selected"><?php echo gettext("Novice (...-1200)");?></option>
+							<option value="2"><?php echo gettext("Occasional (1200-1800)");?></option>
+							<option value="3"><?php echo gettext("Hobbyist (1800-2000)");?></option>
+							<option value="4"><?php echo gettext("Expert (2000-2200)");?></option>
+							<option value="5"><?php echo gettext("Master (2200-...)");?></option>
+                            <?php	
+                        } else if ($_SESSION['userLevel'] == '2'){
+						{	?>
+							<option value="0"><?php echo gettext("(Unknown)");?></option>
+							<option value="1"><?php echo gettext("Novice (...-1200)");?></option>
+							<option value="2" selected="selected"><?php echo gettext("Occasional (1200-1800)");?></option>
+							<option value="3"><?php echo gettext("Hobbyist (1800-2000)");?></option>
+							<option value="4"><?php echo gettext("Expert (2000-2200)");?></option>
+							<option value="5"><?php echo gettext("Master (2200-...)");?></option>
+                            <?php	
+                        } else if ($_SESSION['userLevel'] == '3'){
+						{	?>
+							<option value="0"><?php echo gettext("(Unknown)");?></option>
+							<option value="1"><?php echo gettext("Novice (...-1200)");?></option>
+							<option value="2"><?php echo gettext("Occasional (1200-1800)");?></option>
+							<option value="3" selected="selected"><?php echo gettext("Hobbyist (1800-2000)");?></option>
+							<option value="4"><?php echo gettext("Expert (2000-2200)");?></option>
+							<option value="5"><?php echo gettext("Master (2200-...)");?></option>
+                            <?php	
+                        } else if ($_SESSION['userLevel'] == '4'){
+						{	?>
+							<option value="0" selected="selected"><?php echo gettext("(Unknown)");?></option>
+							<option value="1"><?php echo gettext("Novice (...-1200)");?></option>
+							<option value="2"><?php echo gettext("Occasional (1200-1800)");?></option>
+							<option value="3"><?php echo gettext("Hobbyist (1800-2000)");?></option>
+							<option value="4" selected="selected"><?php echo gettext("Expert (2000-2200)");?></option>
+							<option value="5"><?php echo gettext("Master (2200-...)");?></option>
+                            <?php	
+                        } else if ($_SESSION['userLevel'] == '5'){
+						{	?>
+							<option value="0"><?php echo gettext("(Unknown)");?></option>
+							<option value="1"><?php echo gettext("Novice (...-1200)");?></option>
+							<option value="2"><?php echo gettext("Occasional (1200-1800)");?></option>
+							<option value="3"><?php echo gettext("Hobbyist (1800-2000)");?></option>
+							<option value="4"><?php echo gettext("Expert (2000-2200)");?></option>
+							<option value="5" selected="selected"><?php echo gettext("Master (2200-...)");?></option>
+                            <?php	
+                        }
+					?>
+					</select>
                     </div>
                     
                                         <input type="submit" class="button" value="<?php echo gettext("Update");?>" />
@@ -746,7 +848,7 @@
                                                 <div class="inputlabel"><?php echo gettext("Select Opponent");?></div>
 						<select name="opponent">
 						<?php
-							$tmpQuery="SELECT playerID, nick FROM " . $CFG_TABLE[players] . " WHERE playerID <> ".$_SESSION['playerID'];
+							$tmpQuery="SELECT playerID, nick, userlevel FROM " . $CFG_TABLE[players] . " WHERE playerID <> ".$_SESSION['playerID'];
 							$tmpPlayers = mysql_query($tmpQuery);
 							$first = true;
 							while($tmpPlayer = mysql_fetch_array($tmpPlayers, MYSQL_ASSOC))
@@ -757,7 +859,7 @@
 									echo('selected="selected" ');
 									$first = false;
 								}
-								echo ('value="'.$tmpPlayer['playerID'].'"> '.$tmpPlayer['nick']."</option>\n");
+								echo ('value="'.$tmpPlayer['playerID'].'"> '.$tmpPlayer['nick'].' '.$tmpPlayer['userlevel'].'</option>\n"');
 							}
 						?>
 						</select>
@@ -827,13 +929,13 @@
 										echo($tmpGame['gameID']);
 
 										/* get white's nick */
-										$tmpPlayer = mysql_query("SELECT nick FROM " . $CFG_TABLE[players] . " WHERE playerID = ".$tmpGame['whitePlayer']);
+										$tmpPlayer = mysql_query("SELECT CONCAT(nick, ' ', userlevel) as nick FROM " . $CFG_TABLE[players] . " WHERE playerID = ".$tmpGame['whitePlayer']);
 										$player = mysql_result($tmpPlayer, 0);
 										echo ('</td><td>');
 										echo($player);
 
 										/* black's nick */
-										$tmpPlayer = mysql_query("SELECT nick FROM " . $CFG_TABLE[players] . " WHERE playerID = ".$tmpGame['blackPlayer']);
+										$tmpPlayer = mysql_query("SELECT CONCAT(nick, ' ', userlevel) as nick FROM " . $CFG_TABLE[players] . " WHERE playerID = ".$tmpGame['blackPlayer']);
 										$player = mysql_result($tmpPlayer, 0);
 										echo ('</td><td>');
 										echo($player);
@@ -901,13 +1003,13 @@
 										echo($tmpGame['gameID']);
 
 										/* get white's nick */
-										$tmpPlayer = mysql_query("SELECT nick FROM " . $CFG_TABLE[players] . " WHERE playerID = ".$tmpGame['whitePlayer']);
+										$tmpPlayer = mysql_query("SELECT CONCAT(nick, ' ', userlevel) as nick FROM " . $CFG_TABLE[players] . " WHERE playerID = ".$tmpGame['whitePlayer']);
 										$player = mysql_result($tmpPlayer, 0);
 										echo ('</td><td>');
 										echo($player);
 
 										/* black's nick */
-										$tmpPlayer = mysql_query("SELECT nick FROM " . $CFG_TABLE[players] . " WHERE playerID = ".$tmpGame['blackPlayer']);
+										$tmpPlayer = mysql_query("SELECT CONCAT(nick, ' ', userlevel) as nick FROM " . $CFG_TABLE[players] . " WHERE playerID = ".$tmpGame['blackPlayer']);
 										$player = mysql_result($tmpPlayer, 0);
 										echo ("</td><td>");
 										echo($player);
@@ -990,13 +1092,13 @@
 								echo('<td>');
 								echo("<a href=\"javascript:loadGame(".$tmpGame['gameID'].")\">".$tmpGame['gameID']."</a>");
 								/* get white's nick */
-								$tmpPlayer = mysql_query("SELECT nick FROM " . $CFG_TABLE[players] . " WHERE playerID = ".$tmpGame['whitePlayer']);
+								$tmpPlayer = mysql_query("SELECT CONCAT(nick, ' ', userlevel) as nick FROM " . $CFG_TABLE[players] . " WHERE playerID = ".$tmpGame['whitePlayer']);
 								$player = mysql_result($tmpPlayer, 0);
 								echo ('</td><td>');
 								echo($player);
 
 								/* black's nick */
-								$tmpPlayer = mysql_query("SELECT nick FROM " . $CFG_TABLE[players] . " WHERE playerID = ".$tmpGame['blackPlayer']);
+								$tmpPlayer = mysql_query("SELECT CONCAT(nick, ' ', userlevel) as nick FROM " . $CFG_TABLE[players] . " WHERE playerID = ".$tmpGame['blackPlayer']);
 								$player = mysql_result($tmpPlayer, 0);
 								echo ("</td><td>");
 								echo($player);
@@ -1192,7 +1294,7 @@
 						<tbody id="finishedTblBdy">
 <?php
 
-    if (isset($_SESSION['replyAll']) && $_SESSION['replyAll'] == 'true')
+    if (isset($_SESSION['replayAll']) && $_SESSION['replayAll'] == 'true')
     {
         $mygames = "";
     }
@@ -1219,13 +1321,13 @@
 			echo('<td>');
 			echo("<a href=\"javascript:loadGame(".$tmpGame['gameID'].")\">".$tmpGame['gameID']."</a>");
 			/* get white's nick */
-			$tmpPlayer = mysql_query("SELECT nick FROM " . $CFG_TABLE[players] . " WHERE playerID = ".$tmpGame['whitePlayer']);
+			$tmpPlayer = mysql_query("SELECT CONCAT(nick, ' ', userlevel) as nick FROM " . $CFG_TABLE[players] . " WHERE playerID = ".$tmpGame['whitePlayer']);
 			$player = mysql_result($tmpPlayer, 0);
 			echo ('</td><td>');
 			echo($player);
 
 			/* black's nick */
-			$tmpPlayer = mysql_query("SELECT nick FROM " . $CFG_TABLE[players] . " WHERE playerID = ".$tmpGame['blackPlayer']);
+			$tmpPlayer = mysql_query("SELECT CONCAT(nick, ' ', userlevel) as nick FROM " . $CFG_TABLE[players] . " WHERE playerID = ".$tmpGame['blackPlayer']);
 			$player = mysql_result($tmpPlayer, 0);
 			echo ("</td><td>");
 			echo($player);
