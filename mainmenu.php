@@ -153,7 +153,12 @@
 				$_SESSION['firstName'] = $tmpPlayer['firstName'];
 				$_SESSION['lastName'] = $tmpPlayer['lastName'];
 				$_SESSION['nick'] = $tmpPlayer['nick'];
-				$_SESSION['userLevel'] = $tmpPlayer['userlevel'];
+                
+                if ($tmpPlayer['userlevel'] == "(Novice)")$_SESSION['userLevel'] =  '1';
+                if ($tmpPlayer['userlevel'] == "(Occasional)")$_SESSION['userLevel'] =  '2';
+                if ($tmpPlayer['userlevel'] == "(Hobbyist)")$_SESSION['userLevel'] =  '3';
+                if ($tmpPlayer['userlevel'] == "(Expert)")$_SESSION['userLevel'] =  '4';
+                if ($tmpPlayer['userlevel'] == "(Master)")$_SESSION['userLevel'] =  '5';
 			}
 			else {
 				echo "<script>alert('Invalid Nick or Password. Please try again'); window.location.replace('index.php');</script>\n";
