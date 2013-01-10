@@ -21,6 +21,9 @@
 
 	session_start();
 
+    #Debug:
+    #ini_set('display_errors', 'On');
+
 	/* load settings */
 	if (!isset($_CONFIG))
 		require 'config.php';
@@ -51,7 +54,8 @@
 	/* find out which games are older */
 	$tmpQuery = "SELECT gameID FROM " . $CFG_TABLE[games] . " WHERE lastMove < '".$targetDate."'";
 	$tmpOldGames = mysql_query($tmpQuery);
-
+    if (!$tmpOldGames) echo mysql_errno() . ": " . mysql_error() . "\n<br><br>";
+            
 	/* for each older game... */
 	while($tmpOldGame = mysql_fetch_array($tmpOldGames, MYSQL_ASSOC))
 	{
@@ -83,6 +87,7 @@
 			/* check for existing user with same nick */
 			$tmpQuery = "SELECT playerID FROM " . $CFG_TABLE[players] . " WHERE nick = '".$_POST['txtNick']."'";
 			$existingUsers = mysql_query($tmpQuery);
+            if (!$existingUsers) echo mysql_errno() . ": " . mysql_error() . "\n<br><br>";
 			if (mysql_num_rows($existingUsers) > 0)
 			{
 				require 'newuser.php';
@@ -90,7 +95,8 @@
 			}
 
 			$tmpQuery = "INSERT INTO " . $CFG_TABLE[players] . " (password, firstName, lastName, nick) VALUES ('".md5($_POST['pwdPassword'])."', '".$_POST['txtFirstName']."', '".$_POST['txtLastName']."', '".$_POST['txtNick']."')";
-			mysql_query($tmpQuery);
+			$res = mysql_query($tmpQuery);
+            if (!$res) echo mysql_errno() . ": " . mysql_error() . "\n<br><br>";
 
 			/* get ID of new player */
 			$_SESSION['playerID'] = mysql_insert_id();
@@ -135,6 +141,7 @@
 			/* check for a player with supplied nick and password */
 			$tmpQuery = "SELECT * FROM " . $CFG_TABLE[players] . " WHERE nick = '".$_POST['txtNick']."' AND password = '".md5($_POST['pwdPassword'])."'";
 			$tmpPlayers = mysql_query($tmpQuery);
+            if (!$tmpPlayers) echo mysql_errno() . ": " . mysql_error() . "\n<br><br>";
 			$tmpPlayer = mysql_fetch_array($tmpPlayers, MYSQL_ASSOC);
 
 			/* if such a player exists, log him in... otherwise die */
@@ -156,7 +163,8 @@
 			/* load user preferences */
 			$tmpQuery = "SELECT * FROM " . $CFG_TABLE[preferences] . " WHERE playerID = ".$_SESSION['playerID'];
 			$tmpPreferences = mysql_query($tmpQuery);
-
+            if (!$tmpPreferences) echo mysql_errno() . ": " . mysql_error() . "\n<br><br>";
+            
 			$isPreferenceFound['history'] = false;
 			$isPreferenceFound['historylayout'] = false;
 			$isPreferenceFound['theme'] = false;
@@ -223,7 +231,8 @@
 						break;
 				}
 				$tmpQuery = "INSERT INTO " . $CFG_TABLE[preferences] . " (playerID, preference, value) VALUES (".$_SESSION['playerID'].", '".$missingPref."', '".$defaultValue."')";
-				mysql_query($tmpQuery);
+				$res = mysql_query($tmpQuery);
+                if (!$res) echo mysql_errno() . ": " . mysql_error() . "\n<br><br>";
 
 				/* setup SESSION var of name pref_PREF, like pref_history */
 				if ($CFG_USEEMAILNOTIFICATION || ($missingPref != 'emailnotification'))
@@ -419,24 +428,12 @@
 			if (is_numeric($_POST['userLevel']))
 			{
                 $userleveltxt = "";
-                switch ($_POST['userLevel']) {
-                case '0':
-                    break;
-                case '1':
-                    $userleveltxt =  "(Novice)";
-                    break;
-                case '2':
-                    $userleveltxt =  "(Occasional)";
-                    break;
-                case '3':
-                    $userleveltxt =  "(Hobbyist)";
-                    break;
-                case '4':
-                    $userleveltxt =  "(Expert)";
-                    break;
-                case '5':
-                    $userleveltxt =  "(Master)";
-                    break;            
+                if ($_POST['userLevel'] == '1')$userleveltxt =  "(Novice)";
+                if ($_POST['userLevel'] == '2')$userleveltxt =  "(Occasional)";
+                if ($_POST['userLevel'] == '3')$userleveltxt =  "(Hobbyist)";
+                if ($_POST['userLevel'] == '4')$userleveltxt =  "(Expert)";
+                if ($_POST['userLevel'] == '5')$userleveltxt =  "(Master)";
+          
                 $tmpQuery = "UPDATE " . $CFG_TABLE[players] . " SET userlevel = '".$userleveltxt."' WHERE playerID = ".$_SESSION['playerID'];
                 mysql_query($tmpQuery);
             }
@@ -774,7 +771,8 @@
 							<option value="4"><?php echo gettext("Expert (2000-2200)");?></option>
 							<option value="5"><?php echo gettext("Master (2200-...)");?></option>
                             <?php	
-                        } else if ($_SESSION['userLevel'] == '1'){
+                        } 
+                        else if ($_SESSION['userLevel'] == '1')
 						{	?>
 							<option value="0"><?php echo gettext("(Unknown)");?></option>
 							<option value="1" selected="selected"><?php echo gettext("Novice (...-1200)");?></option>
@@ -783,7 +781,8 @@
 							<option value="4"><?php echo gettext("Expert (2000-2200)");?></option>
 							<option value="5"><?php echo gettext("Master (2200-...)");?></option>
                             <?php	
-                        } else if ($_SESSION['userLevel'] == '2'){
+                        } 
+                        else if ($_SESSION['userLevel'] == '2')
 						{	?>
 							<option value="0"><?php echo gettext("(Unknown)");?></option>
 							<option value="1"><?php echo gettext("Novice (...-1200)");?></option>
@@ -792,7 +791,8 @@
 							<option value="4"><?php echo gettext("Expert (2000-2200)");?></option>
 							<option value="5"><?php echo gettext("Master (2200-...)");?></option>
                             <?php	
-                        } else if ($_SESSION['userLevel'] == '3'){
+                        } 
+                        else if ($_SESSION['userLevel'] == '3')
 						{	?>
 							<option value="0"><?php echo gettext("(Unknown)");?></option>
 							<option value="1"><?php echo gettext("Novice (...-1200)");?></option>
@@ -801,7 +801,8 @@
 							<option value="4"><?php echo gettext("Expert (2000-2200)");?></option>
 							<option value="5"><?php echo gettext("Master (2200-...)");?></option>
                             <?php	
-                        } else if ($_SESSION['userLevel'] == '4'){
+                        } 
+                        else if ($_SESSION['userLevel'] == '4')
 						{	?>
 							<option value="0" selected="selected"><?php echo gettext("(Unknown)");?></option>
 							<option value="1"><?php echo gettext("Novice (...-1200)");?></option>
@@ -810,7 +811,8 @@
 							<option value="4" selected="selected"><?php echo gettext("Expert (2000-2200)");?></option>
 							<option value="5"><?php echo gettext("Master (2200-...)");?></option>
                             <?php	
-                        } else if ($_SESSION['userLevel'] == '5'){
+                        } 
+                        else if ($_SESSION['userLevel'] == '5')
 						{	?>
 							<option value="0"><?php echo gettext("(Unknown)");?></option>
 							<option value="1"><?php echo gettext("Novice (...-1200)");?></option>
@@ -820,6 +822,17 @@
 							<option value="5" selected="selected"><?php echo gettext("Master (2200-...)");?></option>
                             <?php	
                         }
+                        else 
+						{	?>
+							<option value="0" selected="selected"><?php echo gettext("(Unknown)");?></option>
+							<option value="1"><?php echo gettext("Novice (...-1200)");?></option>
+							<option value="2"><?php echo gettext("Occasional (1200-1800)");?></option>
+							<option value="3"><?php echo gettext("Hobbyist (1800-2000)");?></option>
+							<option value="4"><?php echo gettext("Expert (2000-2200)");?></option>
+							<option value="5"><?php echo gettext("Master (2200-...)");?></option>
+                            <?php	
+                        }
+
 					?>
 					</select>
                     </div>
@@ -850,6 +863,7 @@
 						<?php
 							$tmpQuery="SELECT playerID, nick, userlevel FROM " . $CFG_TABLE[players] . " WHERE playerID <> ".$_SESSION['playerID'];
 							$tmpPlayers = mysql_query($tmpQuery);
+                            if (!$tmpPlayers) echo mysql_errno() . ": " . mysql_error() . "\n<br><br>";
 							$first = true;
 							while($tmpPlayer = mysql_fetch_array($tmpPlayers, MYSQL_ASSOC))
 							{
@@ -931,6 +945,7 @@
 										/* get white's nick */
 										$tmpPlayer = mysql_query("SELECT CONCAT(nick, ' ', userlevel) as nick FROM " . $CFG_TABLE[players] . " WHERE playerID = ".$tmpGame['whitePlayer']);
 										$player = mysql_result($tmpPlayer, 0);
+                                        if (!$player) echo mysql_errno() . ": " . mysql_error() . "\n<br><br>";
 										echo ('</td><td>');
 										echo($player);
 
@@ -1005,7 +1020,8 @@
 										/* get white's nick */
 										$tmpPlayer = mysql_query("SELECT CONCAT(nick, ' ', userlevel) as nick FROM " . $CFG_TABLE[players] . " WHERE playerID = ".$tmpGame['whitePlayer']);
 										$player = mysql_result($tmpPlayer, 0);
-										echo ('</td><td>');
+										if (!$player) echo mysql_errno() . ": " . mysql_error() . "\n<br><br>";
+                                        echo ('</td><td>');
 										echo($player);
 
 										/* black's nick */
@@ -1094,7 +1110,8 @@
 								/* get white's nick */
 								$tmpPlayer = mysql_query("SELECT CONCAT(nick, ' ', userlevel) as nick FROM " . $CFG_TABLE[players] . " WHERE playerID = ".$tmpGame['whitePlayer']);
 								$player = mysql_result($tmpPlayer, 0);
-								echo ('</td><td>');
+								if (!$player) echo mysql_errno() . ": " . mysql_error() . "\n<br><br>";
+                                echo ('</td><td>');
 								echo($player);
 
 								/* black's nick */

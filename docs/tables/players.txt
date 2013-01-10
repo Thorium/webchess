@@ -17,5 +17,5 @@ CREATE TABLE players (
 	lastName CHAR(64) NOT NULL,
 	nick CHAR(64) NOT NULL UNIQUE,
 	lastAccess DATETIME,
-	userlevel CHAR(16) NOT NULL
+	userlevel CHAR(16) NOT NULL DEFAULT ''
 );
