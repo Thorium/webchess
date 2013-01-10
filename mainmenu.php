@@ -1316,7 +1316,7 @@
 						<tbody id="finishedTblBdy">
 <?php
 
-    if (isset($_SESSION['replayAll']) && $_SESSION['replayAll'] == 'true')
+    if (isset($_SESSION['pref_replayall']) && $_SESSION['pref_replayall'] == 'true')
     {
         $mygames = "";
     }
