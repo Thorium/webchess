@@ -47,7 +47,7 @@
 		$dbPassword = mysql_result($tmpPassword, 0);
 
 		/* check to see if supplied password matched that of the DB */
-		if ($dbPassword == $_POST['pwdPassword'])
+		if ($dbPassword == md5($_POST['pwdPassword']))
 		{
 			$_SESSION['isSharedPC'] = true;
 

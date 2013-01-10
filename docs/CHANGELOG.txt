@@ -1,6 +1,7 @@
-2013-01-03 (unofficial version - https://github.com/Thorium/webchess )
+2013-01-10 (unofficial version - https://github.com/Thorium/webchess )
 - user interface appearance changes
 - watch also other players' games
+- user passwords md5 hashed
 
 2010-08-14 (CVS)
 - upgraded WebChess license to GPL v3
