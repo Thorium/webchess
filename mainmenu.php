@@ -1380,10 +1380,12 @@
 					echo("</td><td>&frac12;-&frac12; (" . gettext("stalemate") . ")");
 				else if ($tmpGame['gameMessage'] == "playerResigned")
 					echo("</td><td>".gettext($tmpGame['messageFrom'])." " . gettext("resigned"));
-				else if (($tmpGame['gameMessage'] == "checkMate") && ($tmpGame['messageFrom'] == $tmpColor))
+				else if (($mygames != "") && ($tmpGame['gameMessage'] == "checkMate") && ($tmpGame['messageFrom'] == $tmpColor))
 					echo("</td><td>" . gettext("Checkmate, you won!"));
-				else if ($tmpGame['gameMessage'] == "checkMate")
+				else if (($mygames != "") && ($tmpGame['gameMessage'] == "checkMate"))
 					echo("</td><td>" . gettext("Checkmate, you lost"));
+				else if ($tmpGame['gameMessage'] == "checkMate")
+					echo("</td><td>" . gettext("Checkmate, ".$tmpGame['messageFrom']." won!"));
 				else
 					echo("</td><td>");
 			}
