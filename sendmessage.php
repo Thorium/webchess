@@ -65,8 +65,8 @@ if($_POST['newMessage'])
 
         if ( ($fromPerson!=NULL) && ($toPerson!=NULL) ) {
         $mGame=($_POST['forGame'])?$_POST['from']:"NULL";
-        $msgtitle=$_POST['txtTitle'];
-        $msgtext=$_POST['txtMessage'];
+        $msgtitle=mysql_real_escape_string($_POST['txtTitle']);
+        $msgtext=mysql_real_escape_string($_POST['txtMessage']);
         if($_POST['msgType']=="Article")
                 $msgtype="0";
         else

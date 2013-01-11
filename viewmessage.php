@@ -96,12 +96,12 @@
                     <?php
                         echo gettext("From:") . " " . $FromPlayer; 
                         if($tmpGame['fromID']!=0) {
-                            echo "(<a href=\"javascript:MessagePlayer(" . $tmpGame['fromID'] . ")" . gettext("Reply") . "</a>)"; 
+                            echo " (<a href=\"javascript:MessagePlayer(" . $tmpGame['fromID'] . ")\">" . gettext("Reply") . "</a>)"; 
                         }
                         echo " " . gettext("on") . " " . $tmpGame['postDate'];
                     
                         if($tmpGame['fromID']!=0) {
-                            echo "<a href=\"javascript:HideMessage(" . $messageID . ")\">" . gettext("Archive") . "</a>";
+                            echo " [<a href=\"javascript:HideMessage(" . $messageID . ")\">" . gettext("Archive") . "</a>]";
                         }
                     ?>
                     </div>
