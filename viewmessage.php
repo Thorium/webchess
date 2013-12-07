@@ -94,7 +94,7 @@
                 ?>
                     <div class="messageheader">
                     <?php
-                        echo gettext("From:") . " " . $FromPlayer; 
+                        echo gettext("From:") . " " . htmlspecialchars($FromPlayer); 
                         if($tmpGame['fromID']!=0) {
                             echo " (<a href=\"javascript:MessagePlayer(" . $tmpGame['fromID'] . ")\">" . gettext("Reply") . "</a>)"; 
                         }
@@ -109,9 +109,9 @@
                     <input type="hidden" name="messageID" />
                     <input type="hidden" name="ToDo" value="HideMessage" />
                     </form>
-                    <div class="inputlabel"> <?php echo $tmpGame['title'];?> </div>
+                    <div class="inputlabel"> <?php echo htmlspecialchars($tmpGame['title']);?> </div>
                     <div>
-                        <p> <?php echo str_replace("\n", "</p><p>", $tmpGame['text']);?> </p>
+                        <p> <?php echo str_replace("\n", "</p><p>", htmlspecialchars($tmpGame['text']));?> </p>
                     </div>
                 <?php
                 }
