@@ -1,4 +1,4 @@
-// $Id: board.js,v 1.9 2010/08/18 00:32:24 sandking Exp $
+// $Id: board.js,v 1.91 2013/12/07 20:00:00 gitjake Exp $
 
 /*
     This file is part of WebChess. http://webchess.sourceforge.net
@@ -273,7 +273,7 @@ function htmlBoard()
 			else
 				i++;
 		}
-		theBoard += '<td id="tsq' + i + '" class="' + sqBackground[j] + '" width="' + squareSize + '" height="' + squareSize + '">';
+		theBoard += '<td id="tsq' + i + '" class="' + sqBackground[j] + '" width="' + squareSize + '" height="' + squareSize + '" style="min-width: ' + squareSize  + 'px">';
 		var piece = '';
 		var source = '';
 		row = parseInt(i / 8);
@@ -329,7 +329,7 @@ var theBoard = htmlBoard();	// The HTML code for the board
 var theFEN = new Array();
 var currMoveIdx = 0;
 
-window.onload = function ()
+domready(function ()
 {
 	var invertBoard = (perspective == 'black');
 	getObject('chessboard').innerHTML = theBoard;
@@ -427,4 +427,4 @@ window.onload = function ()
 
 	if(autoreload > 0)
     	var intervalId = setInterval("window.location.replace('chess.php?autoreload=yes')", autoreload * 1000);
-}
+});

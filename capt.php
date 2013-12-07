@@ -1,5 +1,5 @@
 <?php
-// $Id: capt.php,v 1.5 2010/08/14 16:57:54 sandking Exp $
+// $Id: capt.php,v 1.51 2013/12/07 20:30:00 gitjake Exp $
 
 /*
     This file is part of WebChess. http://webchess.sourceforge.net

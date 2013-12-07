@@ -1,5 +1,5 @@
 <?php 
-// $Id: chessdb.php,v 1.10 2010/08/14 16:57:54 sandking Exp $
+// $Id: chessdb.php,v 1.11 2013/12/07 20:00:00 gitjake Exp $
 
 /*
     This file is part of WebChess. http://webchess.sourceforge.net
@@ -53,6 +53,7 @@
 	function savePromotion()
 	{
 		global $CFG_TABLE;
+		global $CFG_USEEMAILNOTIFICATION;
 		global $history, $numMoves, $isInCheck;
 
 		/* old PHP versions don't have _POST, _GET and _SESSION as auto_globals */
@@ -286,6 +287,7 @@
 		mysql_query("DELETE FROM " . $CFG_TABLE[pieces] . " WHERE gameID = ".$_SESSION['gameID']);
 
 		/* save new game data */
+		$values = array(); // insert values
 		/* for each row... */
 		for ($i = 0; $i < 8; $i++)
 		{
@@ -302,10 +304,11 @@
 						$tmpColor = "white";
 
 					$tmpPiece = getPieceName($board[$i][$j]);
-					mysql_query("INSERT INTO " . $CFG_TABLE[pieces] . " (gameID, color, piece, row, col) VALUES (".$_SESSION['gameID'].", '$tmpColor', '$tmpPiece', $i, $j)");
+					$values[] = '('.$_SESSION['gameID'].", '$tmpColor', '$tmpPiece', $i, $j)";
 				}
 			}
 		}
+		mysql_query("INSERT INTO " . $CFG_TABLE[pieces] . ' (gameID, color, piece, row, col) VALUES ' . implode(',', $values));
 
 		/* update lastMove timestamp */
 		updateTimestamp();

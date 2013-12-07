@@ -1,5 +1,5 @@
 <?php
-	// $Id: newuser.php,v 1.8 2010/08/15 07:54:46 sandking Exp $
+	// $Id: newuser.php,v 1.81 2013/12/07 20:00:00 gitjake Exp $
 
 /*
     This file is part of WebChess. http://webchess.sourceforge.net

@@ -1,5 +1,5 @@
 <?php
-// $Id: chess.php,v 1.13 2010/08/18 09:38:56 sandking Exp $
+// $Id: chess.php,v 1.14 2013/12/07 20:00:00 gitjake Exp $
 
 /*
     This file is part of WebChess. http://webchess.sourceforge.net
@@ -74,13 +74,16 @@
 		doUndo();
 		saveGame();
 	}
-	elseif (!empty($_POST['promotion']) && !empty($_POST['toRow']) && !empty($_POST['toCol'])) 
+	elseif (!empty($_POST['promotion']) && isset($_POST['toRow']) && ('' !== $_POST['toRow']) && isset($_POST['toCol']) && ('' !== $_POST['toCol'])) 
 	{
 		savePromotion();
 		$board[$_POST['toRow']][$_POST['toCol']] = $_POST['promotion'] | ($board[$_POST['toRow']][$_POST['toCol']] & BLACK);
 		saveGame();
 	} 
-	elseif (!empty($_POST['fromRow']) && !empty($_POST['fromCol']) && !empty($_POST['toRow']) && !empty($_POST['toCol']))
+	elseif (
+		isset($_POST['fromRow']) && isset($_POST['fromCol']) && isset($_POST['toRow']) && isset($_POST['toCol'])
+		&& ('' !== $_POST['fromRow']) && ('' !== $_POST['fromCol']) && ('' !== $_POST['toRow']) && ('' !== $_POST['toCol'])
+	) // END elseif
 	{
 		/* ensure it's the current player moving				 */
 		/* NOTE: if not, this will currently ignore the command...               */
@@ -128,8 +131,8 @@
 <meta http-equiv="Page-Exit" content="blendTrans(Duration=0.18)">
 <link rel="stylesheet" href="chess.css" type="text/css" />
 <?php
-	echo("<link rel='stylesheet' href='images/");
-	echo($_SESSION['pref_theme'] . "/wctheme.css' type='text/css' />\n");
+	//echo("<link rel='stylesheet' href='images/");
+	//echo($_SESSION['pref_theme'] . "/wctheme.css' type='text/css' />\n");
 
 	/* find out if it's the current player's turn */
 	if (( (($numMoves == -1) || (($numMoves % 2) == 1)) && ($playersColor == "white"))
@@ -176,6 +179,7 @@
 	require 'capt.php';
 ?>
 </script>
+<script type="text/javascript" src="javascript/domready.js"></script>
 <script type="text/javascript" src="javascript/chessutils.js"></script>
 <script type="text/javascript" src="javascript/commands.js"></script>
 <script type="text/javascript" src="javascript/validation.js"></script>

@@ -1,5 +1,5 @@
 <?php
-// $Id: mainmenu.php,v 1.20 2010/08/23 04:40:59 sandking Exp $
+// $Id: mainmenu.php,v 1.21 2013/12/07 20:00:00 gitjake Exp $
 
 /*
     This file is part of WebChess. http://webchess.sourceforge.net

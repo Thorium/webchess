@@ -1,5 +1,5 @@
 <?php
-// $Id: gui.php,v 1.13 2010/08/15 10:29:00 sandking Exp $
+// $Id: gui.php,v 1.14 2013/12/07 20:00:00 gitjake Exp $
 
 /*
     This file is part of WebChess. http://webchess.sourceforge.net

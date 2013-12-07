@@ -2,7 +2,7 @@
 
 // exit('halt'); // script not needed anymore after install and configuration are complete
 
-// $Id: makeConfig.php,v 1.1 2010/08/23 02:53:46 sandking Exp $
+// $Id: makeConfig.php,v 1.11 2013/12/07 20:00:00 gitjake Exp $
 
 /*
     This file is part of WebChess. http://webchess.sourceforge.net

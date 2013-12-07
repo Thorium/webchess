@@ -1,4 +1,7 @@
-History:
+Known issues;
+
+   - If a player reloads the board while a turn is being processed then the board may be incomplete.
+
 WebChess 1.0.0rc3 (2013-12-07)
 
  + minor fixes:
@@ -11,6 +14,9 @@ WebChess 1.0.0rc3 (2013-12-07)
    - Updated `players` table definition to hold the md5 password and change the CHARs to VARCHARs
    - Removed some PHP warnings and notices
    - These fixes were minimal just to get a game up and running and see if it's worth playing
+   - Changed the window.onload to document.onready (using domready.js)
+   - Fixed issue with columns collapsing if they contained no pieces
+   - Fixed issue with slow moves (changed single SQL inserts in to a batch insert)
  
 WebChess 1.0.0rc2 (2010-08-14)
  + minor changes:
