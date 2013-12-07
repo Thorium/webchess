@@ -354,7 +354,7 @@
 			echo("Processing user generated (ie: form) messages...<br>\n");
 
 		/* queue a request for an undo */
-		if ($_POST['requestUndo'] == "yes")
+		if (isset($_POST['requestUndo']) && ($_POST['requestUndo'] == "yes")) 
 		{
 			/* if the two players are on the same system, execute undo immediately */
 			/* NOTE: assumes the two players discussed it live before undoing */
@@ -371,7 +371,7 @@
 		}
 		
 		/* queue a request for a draw */
-		if ($_POST['requestDraw'] == "yes")
+		if (isset($_POST['requestDraw']) && ($_POST['requestDraw'] == "yes"))
 		{
 			/* if the two players are on the same system, execute Draw immediately */
 			/* NOTE: assumes the two players discussed it live before declaring the game a draw */
@@ -431,7 +431,7 @@
 		}
 		
 		/* resign the game */
-		if ($_POST['resign'] == "yes")
+		if (isset($_POST['resign']) && ($_POST['resign'] == "yes"))
 		{
 			$tmpQuery = "UPDATE " . $CFG_TABLE[games] . " SET gameMessage = 'playerResigned', messageFrom = '".$currentPlayer."' WHERE gameID = ".$_SESSION['gameID'];
 			mysql_query($tmpQuery);
@@ -535,7 +535,7 @@
 		
 		/* game level status: draws, resignations and checkmate */
 		/* if checkmate, update games table */
-		if ($_POST['isCheckMate'] == 'true')
+		if (isset($_POST['isCheckMate']) && ($_POST['isCheckMate'] == 'true'))
 			mysql_query("UPDATE " . $CFG_TABLE[games] . " SET gameMessage = 'checkMate', messageFrom = '".$currentPlayer."' WHERE gameID = ".$_SESSION['gameID']);
                         // ToDo: Mail checkmate notification to opponent
 

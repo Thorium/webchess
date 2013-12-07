@@ -74,7 +74,11 @@
 
 	$tmpNewUser = false;
 	$errMsg = "";
-	switch($_POST['ToDo'])
+	$postTodo = '';
+	if (isset($_POST['ToDo'])) {
+		$postTodo = $_POST['ToDo'];
+	}
+	switch($postTodo) 
 	{
 		case 'NewUser':
 			/* create new player */
@@ -102,19 +106,19 @@
 			$_SESSION['playerID'] = mysql_insert_id();
 
 			/* set History format preference */
-			$tmpQuery = "INSERT INTO " . $CFG_TABLE[preferences] . " (playerID, preference, value) VALUES (".$_SESSION['playerID'].", 'history', '".$_POST['rdoHistory']."')";
+			$tmpQuery = "INSERT INTO " . $CFG_TABLE[preferences] . " (playerID, preference, value) VALUES (".$_SESSION['playerID'].", 'history', '".isset($_POST['rdoHistory'])?$_POST['rdoHistory']:''."')";
 			mysql_query($tmpQuery);
 
 			/* set History layout preference */
-			$tmpQuery = "INSERT INTO " . $CFG_TABLE[preferences] . " (playerID, preference, value) VALUES (".$_SESSION['playerID'].", 'historylayout', '".$_POST['rdoHistorylayout']."')";
+			$tmpQuery = "INSERT INTO " . $CFG_TABLE[preferences] . " (playerID, preference, value) VALUES (".$_SESSION['playerID'].", 'historylayout', '".isset($_POST['rdoHistorylayout'])?$_POST['rdoHistorylayout']:''."')";
 			mysql_query($tmpQuery);
 
 			/* set Theme preference */
-			$tmpQuery = "INSERT INTO " . $CFG_TABLE[preferences] . " (playerID, preference, value) VALUES (".$_SESSION['playerID'].", 'theme', '".$_POST['rdoTheme']."')";
+			$tmpQuery = "INSERT INTO " . $CFG_TABLE[preferences] . " (playerID, preference, value) VALUES (".$_SESSION['playerID'].", 'theme', '".isset($_POST['rdoTheme'])?$_POST['rdoTheme']:''."')";
 			mysql_query($tmpQuery);
 
             /* set Theme preference */
-			$tmpQuery = "INSERT INTO " . $CFG_TABLE[preferences] . " (playerID, preference, value) VALUES (".$_SESSION['playerID'].", 'replayall', '".$_POST['replayAll']."')";
+			$tmpQuery = "INSERT INTO " . $CFG_TABLE[preferences] . " (playerID, preference, value) VALUES (".$_SESSION['playerID'].", 'replayall', '".isset($_POST['replayAll'])?$_POST['replayAll']:''."')";
 			mysql_query($tmpQuery);
             
 			/* set auto-reload preference */
@@ -154,11 +158,11 @@
 				$_SESSION['lastName'] = $tmpPlayer['lastName'];
 				$_SESSION['nick'] = $tmpPlayer['nick'];
                 
-                if ($tmpPlayer['userlevel'] == "(Novice)")$_SESSION['userLevel'] =  '1';
-                if ($tmpPlayer['userlevel'] == "(Occasional)")$_SESSION['userLevel'] =  '2';
-                if ($tmpPlayer['userlevel'] == "(Hobbyist)")$_SESSION['userLevel'] =  '3';
-                if ($tmpPlayer['userlevel'] == "(Expert)")$_SESSION['userLevel'] =  '4';
-                if ($tmpPlayer['userlevel'] == "(Master)")$_SESSION['userLevel'] =  '5';
+                if (isset($tmpPlayer['userlevel']) && $tmpPlayer['userlevel'] == "(Novice)")$_SESSION['userLevel'] =  '1';
+                if (isset($tmpPlayer['userlevel']) && $tmpPlayer['userlevel'] == "(Occasional)")$_SESSION['userLevel'] =  '2';
+                if (isset($tmpPlayer['userlevel']) && $tmpPlayer['userlevel'] == "(Hobbyist)")$_SESSION['userLevel'] =  '3';
+                if (isset($tmpPlayer['userlevel']) && $tmpPlayer['userlevel'] == "(Expert)")$_SESSION['userLevel'] =  '4';
+                if (isset($tmpPlayer['userlevel']) && $tmpPlayer['userlevel'] == "(Master)")$_SESSION['userLevel'] =  '5';
 			}
 			else {
 				echo "<script>alert('Invalid Nick or Password. Please try again'); window.location.replace('index.php');</script>\n";
@@ -610,13 +614,13 @@
 				<div class="form-block">
                                 <h1><?php echo gettext("Personal information");?></h1>
                                                 <div class="inputlabel"><?php echo gettext("First Name"); ?></div>
-						<div><input name="txtFirstName" type="text" class="inputbox" value="<?php echo($_SESSION['firstName']); ?>" /></div>
+						<div><input name="txtFirstName" type="text" class="inputbox" value="<?php echo htmlspecialchars($_SESSION['firstName']); ?>" /></div>
                                                 <div class="inputlabel"><?php echo gettext("Last Name"); ?></div>
-						<div><input name="txtLastName" type="text" class="inputbox" value="<?php echo($_SESSION['lastName']); ?>" /></div>
+						<div><input name="txtLastName" type="text" class="inputbox" value="<?php echo htmlspecialchars($_SESSION['lastName']); ?>" /></div>
 						<?php if ($CFG_NICKCHANGEALLOWED) { ?>
 							<div class="inputlabel">Nick</div>
 							<div>
-								<input name="txtNick" type="text" class="inputbox" value="<?php echo($_SESSION['nick']); ?> />
+								<input name="txtNick" type="text" class="inputbox" value="<?php echo htmlspecialchars($_SESSION['nick']); ?>" />
 							</div>
 						<?php } ?>
                                                 <div class="inputlabel"><?php echo gettext("Current Password"); ?></div>
@@ -733,10 +737,10 @@
 					</div>
 					<br/>
                                         <div class="inputlabel"><?php echo gettext("Auto-reload") . " (" . gettext("min: ") . ($CFG_MINAUTORELOAD) . " " . gettext("secs") . ")";?></div>
-					<div><input type="text" class="inputbox" name="txtReload" value="<?php echo ($_SESSION['pref_autoreload']); ?>" /></div>
+					<div><input type="text" class="inputbox" name="txtReload" value="<?php echo htmlspecialchars($_SESSION['pref_autoreload']); ?>" /></div>
 					<?php if ($CFG_USEEMAILNOTIFICATION) { ?>
                                                 <div class="inputlabel"><?php echo gettext("Email notification");?></div>
-						<div><input type="text" class="inputbox" name="txtEmailNotification" value="<?php echo($_SESSION['pref_emailnotification']); ?>" /></div>
+						<div><input type="text" class="inputbox" name="txtEmailNotification" value="<?php echo htmlspecialchars($_SESSION['pref_emailnotification']); ?>" /></div>
                                                 <div class="instruction"><?php echo gettext("Enter a valid email address if you would like to be notified when your opponent makes a move. Leave blank otherwise.");?></div>
 						<?php if ($_SESSION['pref_emailnotification'] != "") { ?>
                                                         <input type="button" class="button" name="btnTestEmailNotification" value="<?php echo gettext("Test Email");?>" onclick="testEmail()" />
@@ -866,7 +870,7 @@
                                                 <div class="inputlabel"><?php echo gettext("Select Opponent");?></div>
 						<select name="opponent">
 						<?php
-							$tmpQuery="SELECT playerID, nick, userlevel FROM " . $CFG_TABLE[players] . " WHERE playerID <> ".$_SESSION['playerID'];
+							$tmpQuery="SELECT playerID, nick, userlevel FROM " . $CFG_TABLE[players] . " WHERE playerID != ".$_SESSION['playerID'];
 							$tmpPlayers = mysql_query($tmpQuery);
                             if (!$tmpPlayers) echo mysql_errno() . ": " . mysql_error() . "\n<br><br>";
 							$first = true;
@@ -878,7 +882,7 @@
 									echo('selected="selected" ');
 									$first = false;
 								}
-								echo ('value="'.$tmpPlayer['playerID'].'"> '.$tmpPlayer['nick'].' '.$tmpPlayer['userlevel'].'</option>\n"');
+								echo ('value="'.htmlspecialchars($tmpPlayer['playerID']).'"> '.htmlspecialchars($tmpPlayer['nick']).' '.htmlspecialchars($tmpPlayer['userlevel']).'</option>\n"');
 							}
 						?>
 						</select>
@@ -962,7 +966,7 @@
 
 										/* Date issued */
 										echo ("</td><td>".substr($tmpGame['dateCreated'], 0, -3));
-
+										$tmpFrom = ''; // !!jeck
 										/* Response */
 										echo ("</td><td align='center'>");
 										echo ("<input class=\"button\" type=\"button\" value=\"" . gettext("Accept") . "\" onclick=\"sendResponse('accepted', '".$tmpFrom."', ".$tmpGame['gameID'].")\" />");

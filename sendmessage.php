@@ -53,7 +53,7 @@ if (!isset($_CONFIG))
 require "connectdb.php";
 $id=$_SESSION['playerID'];
 
-if($_POST['newMessage'])
+if(!empty($_POST['newMessage']))
 {
 	echo("<PRE>");
 	print_r($_POST);

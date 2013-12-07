@@ -78,15 +78,15 @@
 				<div class="form-block">
                                         <h1><?php echo gettext("Personal information");?></h1>
                                         <div class="inputlabel"><?php echo gettext("First Name");?></div>
-					<div><input name="txtFirstName" type="text" class="inputbox" value="<?php echo($_POST['txtFirstName']); ?>" /></div>
+					<div><input name="txtFirstName" type="text" class="inputbox" value="<?php echo isset($_POST['txtFirstName'])?$_POST['txtFirstName']:''; ?>" /></div>
                                         <div class="inputlabel"><?php echo gettext("Last Name");?></div>
-					<div><input name="txtLastName" type="text" class="inputbox" value="<?php echo($_POST['txtLastName']); ?>" /></div>
+					<div><input name="txtLastName" type="text" class="inputbox" value="<?php echo isset($_POST['txtLastName']) ? $_POST['txtLastName'] : ''; ?>" /></div>
                                         <div class="inputlabel"><?php echo gettext("Nick");?></div>
 					<div>
 						<input name="txtNick" type="text" class="inputbox" />
 						<?php
 							/* this var is set to true in mainmenu.php */
-							if ($tmpNewUser)
+							if (isset($tmpNewUser))
 								echo("<div class=\"warning\">Sorry, the nick you've chosen (".$_POST['txtNick'].") is already in use.  Please try another.</div>");
 						?>
 					</div>

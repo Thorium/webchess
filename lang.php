@@ -1,4 +1,4 @@
-<?
+<?php 
 
 /*
     This file is part of WebChess. http://webchess.sourceforge.net
@@ -22,7 +22,7 @@ $GETTEXT_SUPPORT = false;
 
 if ( ! function_exists('gettext')) {
 	function gettext($text) {
-		return $text;
+		return htmlspecialchars($text);
 	}
 }
 

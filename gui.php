@@ -173,6 +173,7 @@
 	function writeHistoryPGN()
 	{
 		global $history, $numMoves;
+		$moves = array();
 
 		for ($i = 0; $i <= $numMoves; $i++)
 		{
@@ -220,7 +221,11 @@
 			echo($comma);
 			if($i % 4 == 0) // Four moves on each line
 				echo("\n");
-			echo ("['" . $moves[$i][0]."', '".$moves[$i][1]."']");
+			$moves2 = '';
+			if (isset($moves[$i][1])) {
+				$moves2 = $moves[$i][1];
+			}
+			echo ("['" . $moves[$i][0]."', '".$moves2."']");
 			$comma = ', ';
 		}
 		echo("];\n");

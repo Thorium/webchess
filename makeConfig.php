@@ -1,4 +1,7 @@
 <?php
+
+// exit('halt'); // script not needed anymore after install and configuration are complete
+
 // $Id: makeConfig.php,v 1.1 2010/08/23 02:53:46 sandking Exp $
 
 /*
@@ -53,7 +56,7 @@ header('Content-Disposition: attachment; filename="config.php');
 //We see if the administrator has provided a new user to be used. If it is so
 //(FALSE case) we will create the new user, if it is not (TRUE case) we won't
 //create any user.
-if ($_POST['reuse']=='true')
+if (isset($_POST['reuse']) && $_POST['reuse']=='true')
 {
    //In case we reuse, there is no need to create the new username.
    $user=$_POST['user_last'];
@@ -101,7 +104,7 @@ echo "\$CFG_MINAUTORELOAD = ".$_POST['autoreload'].";\n";
 
 
 echo "\$CFG_USEEMAILNOTIFICATION = ";
-if ($_POST['mail_not']=='1')
+if (isset($_POST['mail_not']) &&  $_POST['mail_not']=='1')
    echo "TRUE;\n";
 else echo "FALSE;\n";
 
@@ -111,12 +114,12 @@ echo "\$CFG_MAINPAGE = '".$_POST['url']."';\n";
 echo "\$CFG_MAXUSERS = ".$_POST['maxUsers'].";\n";
 echo "\$CFG_MAXACTIVEGAMES = ".$_POST['maxGames'].";\n";
 echo "\$CFG_NICKCHANGEALLOWED = ";
-if ($_POST['changeNick']=='1')
+if (isset($_POST['changeNick']) &&  $_POST['changeNick']=='1')
    echo "TRUE;\n";
 else echo "FALSE;\n";
 
 echo "\$CFG_NEW_USERS_ALLOWED = ";
-if ($_POST['newUsers']=='1')
+if (isset($_POST['newUsers']) &&  $_POST['newUsers']=='1')
    echo "TRUE;\n";
 else echo "FALSE;\n";
 
@@ -132,7 +135,7 @@ $CFG_TABLE[pieces] = "pieces";
 $CFG_TABLE[players] = "players";
 $CFG_TABLE[preferences] = "preferences";
 
-<?
+<?php 
 echo "\$CFG_IMAGE_EXT = '".$_POST['imageExtension']."';\n";
 echo "?>";
 ?>

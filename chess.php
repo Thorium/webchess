@@ -61,7 +61,7 @@
 	$blackNick = mysql_result($tmpNick, 0);
 
 	/* load game */
-	$isInCheck = ($_POST['isInCheck'] == 'true');
+	$isInCheck = (isset($_POST['isInCheck']) && ($_POST['isInCheck'] == 'true'));
 	$isCheckMate = false;
 	$isPromoting = false;
 	$isUndoing = false;
@@ -74,13 +74,13 @@
 		doUndo();
 		saveGame();
 	}
-	elseif (($_POST['promotion'] != "") && ($_POST['toRow'] != "") && ($_POST['toCol'] != ""))
+	elseif (!empty($_POST['promotion']) && !empty($_POST['toRow']) && !empty($_POST['toCol'])) 
 	{
 		savePromotion();
 		$board[$_POST['toRow']][$_POST['toCol']] = $_POST['promotion'] | ($board[$_POST['toRow']][$_POST['toCol']] & BLACK);
 		saveGame();
-	}
-	elseif (($_POST['fromRow'] != "") && ($_POST['fromCol'] != "") && ($_POST['toRow'] != "") && ($_POST['toCol'] != ""))
+	} 
+	elseif (!empty($_POST['fromRow']) && !empty($_POST['fromCol']) && !empty($_POST['toRow']) && !empty($_POST['toCol']))
 	{
 		/* ensure it's the current player moving				 */
 		/* NOTE: if not, this will currently ignore the command...               */
@@ -218,10 +218,10 @@ if(!isBoardDisabled() || $_SESSION['isSharedPC'])
 		<input type="hidden" name="requestUndo" value="no" />
 		<input type="hidden" name="requestDraw" value="no" />
 		<input type="hidden" name="resign" value="no" />
-		<input type="hidden" name="fromRow" value="<?php if (isPromoting) echo ($_POST['fromRow']); ?>" />
-		<input type="hidden" name="fromCol" value="<?php if (isPromoting) echo ($_POST['fromCol']); ?>" />
-		<input type="hidden" name="toRow" value="<?php if (isPromoting) echo ($_POST['toRow']); ?>" />
-		<input type="hidden" name="toCol" value="<?php if (isPromoting) echo ($_POST['toCol']); ?>" />
+		<input type="hidden" name="fromRow" value="<?php if ($isPromoting) echo ($_POST['fromRow']); ?>" />
+		<input type="hidden" name="fromCol" value="<?php if ($isPromoting) echo ($_POST['fromCol']); ?>" />
+		<input type="hidden" name="toRow" value="<?php if ($isPromoting) echo ($_POST['toRow']); ?>" />
+		<input type="hidden" name="toCol" value="<?php if ($isPromoting) echo ($_POST['toCol']); ?>" />
 		<input type="hidden" name="isInCheck" value="false" />
 		<input type="hidden" name="isCheckMate" value="false" />
 		</form>

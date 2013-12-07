@@ -1,4 +1,6 @@
 <?php
+
+// exit('halt'); // script not needed anymore after install and configuration are complete
 /*
     This file is part of WebChess. http://webchess.sourceforge.net
 	Copyright 2010 Jonathan Evraire, Rodrigo Flores, rigao
@@ -39,8 +41,8 @@ function createTableGames(){
 		gameID SMALLINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 		whitePlayer MEDIUMINT NOT NULL,
 		blackPlayer MEDIUMINT NOT NULL,
-		gameMessage ENUM('playerInvited', 'inviteDeclined', 'draw', 'playerResigned', 'checkMate') NULL,
-		messageFrom ENUM('black', 'white') NULL,
+		gameMessage ENUM('',playerInvited', 'inviteDeclined', 'draw', 'playerResigned', 'checkMate') NULL,
+		messageFrom ENUM('',black', 'white') NULL,
 		dateCreated DATETIME NOT NULL,
 		lastMove DATETIME NOT NULL
 	);";
@@ -94,10 +96,11 @@ function createTablePieces(){
 function createTablePlayers(){
 	$SQLCreateTablePlayers = "CREATE TABLE players (
 		playerID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-		password CHAR(16) NOT NULL,
-		firstName CHAR(20) NOT NULL,
-		lastName CHAR(20) NOT NULL,
-		nick CHAR(20) NOT NULL UNIQUE,
+		password CHAR(32) NOT NULL,
+		firstName varchar(64) NOT NULL,
+		lastName varchar(64) NOT NULL,
+		nick varchar(64) NOT NULL UNIQUE,
+		userlevel tinyint(1) NOT NULL DEFAULT 1,
 		lastAccess DATETIME
 	);";
 	$Result = mysql_query($SQLCreateTablePlayers);
@@ -314,7 +317,7 @@ function createTables($user,$password,$server,$DBname){
       <title>Installing WebChess</title>
 </head><body>
 <h1>WebChess install</h1>
-<?
+<?php
 /* 
  * All mention to $logMsg has been commented out. Now the installer makes things
  * differently. Now it will show the result in the screen, because some times 
@@ -349,7 +352,11 @@ if(file_exists("install.log")) {
  * the operations of each step will be made in the next case (so, the operations
  * which belong to step 1 will be made at the beginning of case 2).
  */
-switch($_POST['confirm']){
+$postConfirm = '';
+if (isset($_POST['confirm'])) {
+$postConfirm = $_POST['confirm'];
+}
+switch($postConfirm){
    //Step 1 of the installation procedure: Setup the database. The beginning of
    //case 2 has code of step 1 too.
    case 1:
@@ -369,7 +376,7 @@ switch($_POST['confirm']){
           fields, leaving the username and password fields blank.  Make sure to
           click the 'I don't have access to the MySQL server...' checkbox.</p>
 
-      <? // This form will be sent to case 2, to end step 1 and to start step 2. ?>
+      <?php // This form will be sent to case 2, to end step 1 and to start step 2. ?>
          <form action='install.php' method='POST' name='step1'><table>
             <tr><td>Server:</td><td><input type="text" name="server"/></td></tr>
             <tr><td>User:</td><td><input type="text" name="user"/></td></tr>
@@ -380,7 +387,7 @@ switch($_POST['confirm']){
             <tr><td colspan="2"><input type='hidden' name='confirm' value='2' />
             <input type='submit' value='Continue' /></td></tr>
          </table></form>      
-      <?
+      <?php
       break;
 
 /******************************************************************************/
@@ -390,7 +397,7 @@ switch($_POST['confirm']){
    case 2:
       //We make the installation procedure from step 1.
       //If the database is not created yet, we will create it.
-      if ($_POST['skip']=='skip'){
+      if (isset($_POST['skip']) && $_POST['skip']=='skip'){
          echo "We skiped the database creation. <br>";
       } else {
          echo "Trying to create the database...<br>";
@@ -410,32 +417,32 @@ switch($_POST['confirm']){
                   tables within the database.</h2>
 
       <p>If the last step was successful, you should now have a database named
-          '<? echo $_POST['DBname']; ?>' which WebChess will use to store its
+          '<?php echo $_POST['DBname']; ?>' which WebChess will use to store its
           data. In order to do so, you must create the database tables.</p>
 
       <p>Enter a user with create-table rights. You may re-use the same one as
           in step 1 or input a different one.</p>
 
-      <? //This form will be sent to case 3, to end step 2 and to start step 3. ?>
+      <?php //This form will be sent to case 3, to end step 2 and to start step 3. ?>
          <form action='install.php' method='POST' name='step2'><table>
             <tr><td colspan="2">
-                  <input type="hidden" name="server" value="<? echo $_POST['server']; ?>"/></td></tr>
+                  <input type="hidden" name="server" value="<?php echo $_POST['server']; ?>"/></td></tr>
             <tr><td>User:</td><td><input type="text" name="user"/></td></tr>
             <tr><td>Password:</td><td><input type="password" name="pass"/></td></tr>
             <tr><td colspan="2">
-                  <input type="hidden" name="DBname" value="<? echo $_POST['DBname']; ?>"/></td></tr>
+                  <input type="hidden" name="DBname" value="<?php echo $_POST['DBname']; ?>"/></td></tr>
             <tr><td colspan="2">
 		<?php if ($_POST['user'] != '') { ?>
                   <input type="checkbox" name="reuse" value="true"/>Use the same
           user as in step 1.
 		<?php } ?>
-                  <input type="hidden" name="user_last" value="<? echo $_POST['user']; ?>"/>
-                  <input type="hidden" name="pass_last" value="<? echo $_POST['pass']; ?>"/>
+                  <input type="hidden" name="user_last" value="<?php echo $_POST['user']; ?>"/>
+                  <input type="hidden" name="pass_last" value="<?php echo $_POST['pass']; ?>"/>
                </td></tr>
             <tr><td colspan="2"><input type='hidden' name='confirm' value='3' />
             <input type='submit' value='Continue' /></td></tr>
          </table></form>
-      <?
+      <?php 
       break;
 
 /******************************************************************************/
@@ -483,7 +490,7 @@ switch($_POST['confirm']){
              the file (which would break WebChess), verify that the last line
              contains the code: '? >'.</p>
 
-         <?
+         <?php 
             //This form will generate the config.php file and put it to download.
             //It is possible that the hosting provider will add some javascript code
             //at the end of the file for tracking reasons. Then it must be deleted
@@ -492,16 +499,16 @@ switch($_POST['confirm']){
          ?>
          <form action='makeConfig.php' method='POST' name='generateConfigForm' target="_blank"><table>
             <tr><td colspan="2"><b><u>Database Settings:</u></b>
-                  <input type="hidden" name="server" value="<? echo $_POST['server']; ?>"/></td></tr>
+                  <input type="hidden" name="server" value="<?php echo $_POST['server']; ?>"/></td></tr>
             <tr><td>User:</td><td><input type="text" name="user"/></td></tr>
             <tr><td>Password:</td><td><input type="password" name="pass"/></td></tr>
             <tr><td colspan="2">
-                  <input type="hidden" name="DBname" value="<? echo $_POST['DBname']; ?>"/></td></tr>
+                  <input type="hidden" name="DBname" value="<?php echo $_POST['DBname']; ?>"/></td></tr>
             <tr><td colspan="2">
                   <input type="checkbox" name="reuse" value="true"/>Use the same
                       user as in step 2.
-                  <input type="hidden" name="user_last" value="<? echo $user; ?>"/>
-                  <input type="hidden" name="pass_last" value="<? echo $pass; ?>"/>
+                  <input type="hidden" name="user_last" value="<?php echo $user; ?>"/>
+                  <input type="hidden" name="pass_last" value="<?php echo $pass; ?>"/>
                </td></tr>
             <tr><td colspan="2"><b><u>Server Settings:</u></b></td></tr>
             <tr><td>Time before session expires (seconds):</td><td><input type="text" name="timeout"/> (ex: 900)</td></tr>
@@ -524,7 +531,7 @@ switch($_POST['confirm']){
             <input type='submit' value='Generate config.php' /></td></tr>
          </table></form>
 
-         <? //This form is just to end the installation procedure. ?>
+         <?php //This form is just to end the installation procedure. ?>
          <p>After the config.php is downloaded, upload it to your server and
                    click the 'Finish' button to end the installation.</p>
 
@@ -532,13 +539,13 @@ switch($_POST['confirm']){
             <input type='hidden' name='confirm' value='finish' />
             <input type='submit' value='Finish' />
          </form>
-      <?
+      <?php 
       
       break;
 
 /******************************************************************************/
 
-   case finish:
+   case 'finish':
       ?>
          <h2>The installation process has finished.</h2>
 
@@ -559,7 +566,7 @@ switch($_POST['confirm']){
 
          <p><i>Thank you for playing WebChess!</i></p>
 
-      <?
+      <?php 
       break;
 
 /******************************************************************************/
@@ -591,7 +598,7 @@ switch($_POST['confirm']){
       <br />
       <input type="submit" value="Install Databases" />
       </form>
-      <?
+      <?php 
       break;
 }
 ?>

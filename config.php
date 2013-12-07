@@ -53,6 +53,15 @@
 
 	/* mysql table names
 	   Change these if your database needs different table names */
+	// These definitions are a quick fix for the CFG_TABLE constants
+	define('communication', 'communication');
+	define('history', 'history');
+	define('games', 'games');
+	define('messages', 'messages');
+	define('pieces', 'pieces');
+	define('preferences', 'preferences');
+	define('players', 'players		');
+	
 	$CFG_TABLE[communication] = "communication";
 	$CFG_TABLE[games] = "games";
 	$CFG_TABLE[history] = "history";
