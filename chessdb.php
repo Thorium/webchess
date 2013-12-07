@@ -283,8 +283,6 @@
 		if (!minimum_version("4.1.0"))
 			global $_POST, $_GET, $_SESSION;
 		
-		/* clear old data */
-		mysql_query("DELETE FROM " . $CFG_TABLE[pieces] . " WHERE gameID = ".$_SESSION['gameID']);
 
 		/* save new game data */
 		$values = array(); // insert values
@@ -308,6 +306,8 @@
 				}
 			}
 		}
+		/* clear old data */
+		mysql_query("DELETE FROM " . $CFG_TABLE[pieces] . " WHERE gameID = ".$_SESSION['gameID']);
 		mysql_query("INSERT INTO " . $CFG_TABLE[pieces] . ' (gameID, color, piece, row, col) VALUES ' . implode(',', $values));
 
 		/* update lastMove timestamp */

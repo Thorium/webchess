@@ -63,7 +63,8 @@ function createTableHistory(){
 		replaced ENUM('pawn', 'bishop', 'knight', 'rook', 'queen', 'king') NULL,
 		promotedTo ENUM('pawn', 'bishop', 'knight', 'rook', 'queen', 'king') NULL,
 		isInCheck BOOL NOT NULL,
-		PRIMARY KEY(timeOfMove, gameID)
+		PRIMARY KEY(timeOfMove, gameID),
+		INDEX idx_gameID (gameID)
 	);";
 	$Result = mysql_query($SQLCreateTableHistory);
         return $Result;
@@ -87,7 +88,8 @@ function createTablePieces(){
 		color ENUM('white','black') NOT NULL,
 		piece ENUM('pawn','rook','knight','bishop','queen','king') NOT NULL,
 		col SMALLINT NOT NULL,
-		row SMALLINT NOT NULL
+		row SMALLINT NOT NULL,
+		INDEX idx_gameID (gameID)
 	);";
 	$Result = mysql_query($SQLCreateTablePieces);
         return $Result;
