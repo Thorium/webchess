@@ -108,7 +108,7 @@ if (isset($_POST['mail_not']) &&  $_POST['mail_not']=='1')
    echo "TRUE;\n";
 else echo "FALSE;\n";
 
-echo "\$CFG_MAILADRESS = '".$_POST['mail_adr']."';\n";
+echo "\$CFG_MAILADDRESS = '".$_POST['mail_adr']."';\n";
 
 echo "\$CFG_MAINPAGE = '".$_POST['url']."';\n";
 echo "\$CFG_MAXUSERS = ".$_POST['maxUsers'].";\n";
