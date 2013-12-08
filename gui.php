@@ -318,8 +318,8 @@
 		set_FEN($FEN);
 		#get_current_Position();
 		#return;
-		$xheader ="[Event \"WebChess Board #{$_SESSION['gameID']}\"]\n";
-                $xheader .="[Site \"WebChess\"]\n";
+		$xheader ='[Event "' . APP_NAME . " Board #{$_SESSION['gameID']}\"]\n";
+                $xheader .='[Site "' . APP_NAME . "\"]\n";
                 $xheader .="[Date \"$gStart\"]\n";
                 $xheader .="[Round \"-\"]\n";
                 $xheader .="[White \"$pWhiteL, $pWhiteF\"]\n";

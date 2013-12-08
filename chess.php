@@ -1,5 +1,5 @@
 <?php
-// $Id: chess.php,v 1.14 2013/12/07 20:00:00 gitjake Exp $
+// $Id: chess.php,v 1.15 2013/12/08 14:00:00 gitjake Exp $
 
 /*
     This file is part of WebChess. http://webchess.sourceforge.net
@@ -22,8 +22,10 @@
 	session_start();
 
 	/* load settings */
-	if (!isset($_CONFIG))
+	if (!isset($_CONFIG)) {
 		require 'config.php';
+		includ_once 'lang.php';
+	}
 
 	/* define constants */
 	require 'chessconstants.php';
@@ -126,13 +128,13 @@
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta http-equiv="pragma" content="no-cache" />
 <meta http-equiv="Page-Exit" content="blendTrans(Duration=0.18)">
 <link rel="stylesheet" href="chess.css" type="text/css" />
 <?php
-	//echo("<link rel='stylesheet' href='images/");
-	//echo($_SESSION['pref_theme'] . "/wctheme.css' type='text/css' />\n");
+	echo("<link rel='stylesheet' href='images/");
+	echo($_SESSION['pref_theme'] . "/wctheme.css' type='text/css' />\n");
 
 	/* find out if it's the current player's turn */
 	if (( (($numMoves == -1) || (($numMoves % 2) == 1)) && ($playersColor == "white"))
@@ -142,11 +144,11 @@
 		$isPlayersTurn = false;
 
 	if ($_SESSION['isSharedPC'])
-		echo("<title>WebChess</title>\n");
+		echo '<title>', APP_NAME, "</title>\n";
 	else if ($isPlayersTurn)
-		echo("<title>WebChess - Your Move</title>\n");
+		echo '<title>', APP_NAME . gettext(' - Your Move'), "</title>\n";
 	else
-		echo("<title>WebChess - Opponent's Move</title>\n");
+		echo '<title>', APP_NAME . gettext(" - Opponent's Move"), "</title>\n";
 ?>
 <script type="text/javascript">
 <?php
@@ -172,7 +174,20 @@
 	echo 'var isKingInCheck = "'.$isInCheck. "\";\n";
 	echo 'var isGameOver = "'.$isGameOver. "\";\n";
 	echo 'var historyLayout = "'.$_SESSION['pref_historylayout']. "\";\n";
-
+?>
+	// I18n Messages. The translation lang is set in I18N_LOCALE and requires you to have the matching webchess.mo 
+	var i18nMessages = {
+		"Start of game": "<?php echo gettext('Start of game'); ?>"
+		,"Start": "<?php echo gettext('Start'); ?>"
+		,"Go back five halfmoves": "<?php echo gettext('Go back five halfmoves'); ?>"
+		,"Go back one halfmove": "<?php echo gettext('Go back one halfmove'); ?>"
+		,"Go forward one halfmove": "<?php echo gettext('Go forward one halfmove'); ?>"
+		,"Go forward five halfmoves": "<?php echo gettext('Go forward five halfmoves'); ?>"
+		,"End of game": "<?php echo gettext('End of game'); ?>"
+		,"End": "<?php echo gettext('End'); ?>"
+	};
+<?php
+	
 	writeStatus();
 	writeHistory();
 	// Captured pieces..
@@ -196,7 +211,7 @@ if(!isBoardDisabled() || $_SESSION['isSharedPC'])
 <body>
 <div id="wrapper">
 	<div id="header">
-	  <div id="heading">WebChess</div>
+	  <div id="heading"><?php echo APP_NAME; ?></div>
 	</div>
     <?php require 'info.php'; ?>
 	<div id="boardsection" align="center">
@@ -230,8 +245,8 @@ if(!isBoardDisabled() || $_SESSION['isSharedPC'])
 		<input type="hidden" name="isCheckMate" value="false" />
 		</form>
 		<div id="gamenav"></div>
-		<div>When castling, just move the king (the rook will move automatically).</div>
-		<div id="captheading">Captured pieces</div>
+		<div><?echo gettext('When castling, just move the king (the rook will move automatically).');?></div>
+		<div id="captheading"><?echo gettext('Captured pieces'); ?></div>
 		<div id="captures"></div>
 	</div>
 
@@ -249,10 +264,7 @@ if(!isBoardDisabled() || $_SESSION['isSharedPC'])
 		<input type="hidden" name="ToDo" value="Logout" />	<!-- NOTE: this field is only used to Logout -->
 		</form>
 	</div>
-
-	<div id="footer">
-		<p><a href="http://webchess.sourceforge.net/">WebChess</a> is Free Software released under the GNU General Public License (GPL).</p>
-	</div>
+	<?php include_once('footer.php'); ?>
 </div>
 </body>
 </html>

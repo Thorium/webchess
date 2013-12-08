@@ -21,10 +21,10 @@
 */
 
 	/* load settings */
-	if (!isset($_CONFIG))
+	if (!isset($_CONFIG)) {
 		require 'config.php';
-
-        require_once "lang.php";
+        include_once 'lang.php';
+	}
 	?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -33,7 +33,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 <link rel="stylesheet" href="userlogin.css" type="text/css" />
 <script type="text/javascript" src="javascript/cookies.js"></script>
-<title>WebChess :: <?php echo gettext("Login");?></title>
+<title><?php echo APP_NAME; ?> :: <?php echo gettext("Login");?></title>
 <script language="javascript" type="text/javascript">
 var visitordata = null;
 var cookieDomain = null;
@@ -73,7 +73,7 @@ window.onload = function()
 </head>
 <body>
 <div id="header">
-  <div id="heading">WebChess :: <?php echo gettext("Login");?></div>
+  <div id="heading"><?php echo APP_NAME; ?> :: <?php echo gettext("Login");?></div>
 </div>
 
 <div id="ctr" align="center">
@@ -107,19 +107,16 @@ window.onload = function()
 		</div>
 		<div class="login-text">
 			<div class="ctr"><img src="images/webchess.jpg" width="65" height="92" alt="security" /></div>
-                        <p><?php echo gettext("Welcome to") . " " . gettext("WebChess");?>!</p>
-                        <p><?php echo gettext("Use a valid username and password to gain access to WebChess.");?></p>
+                        <p><?php echo gettext("Welcome to") . " " . APP_NAME;?>!</p>
+                        <p><?php echo gettext("Use a valid username and password to gain access.");?></p>
     	</div>
 		<div class="clr"></div>
 	</div>
 </div>
 <div id="break"></div>
 <noscript>
-!Warning! Javascript must be enabled for proper operation of WebChess
+!Warning! Javascript must be enabled for proper operation of <?php echo APP_NAME; ?>
 </noscript>
-<div class="footer" align="center">
-<div align="center"><?php echo "WebChess " . gettext("Version") . " 1.0.0, " . gettext("last updated") ." ". gettext("August"). " 15, 2010"?></div>
-<div align="center"><a href="http://webchess.sourceforge.net/"><?php echo gettext("WebChess");?></a> <?php echo gettext("is Free Software released under the GNU General Public License (GPL).");?></div>
-</div>
+<?php include_once('footer.php'); ?>
 </body>
 </html>

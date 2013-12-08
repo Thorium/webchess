@@ -126,6 +126,24 @@ else echo "FALSE;\n";
 echo "\$CFG_BOARDSQUARESIZE = ".$_POST['size'].";\n";
 
 ?>
+
+/* Application constants */
+define('APP_NAME', 'WebChess'); // The name of the app that is shown in the title
+define('APP_VERSION', '1.0.3rc'); // The version of the app
+
+/* I18N constants */
+define('I18N_GETTEXT_SUPPORT', false); // enable gettext for fetching translations
+define('I18N_LOCALE', 'de_DE'); // locale to use (requires the webchess.mo file for the locale)
+
+/* mysql table names */
+define('communication', 'communication');
+define('history', 'history');
+define('games', 'games');
+define('messages', 'messages');
+define('pieces', 'pieces');
+define('preferences', 'preferences');
+define('players', 'players');
+
 /* mysql table names */
 $CFG_TABLE[communication] = "communication";
 $CFG_TABLE[games] = "games";

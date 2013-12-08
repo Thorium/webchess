@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: chess\n"
-"POT-Creation-Date: 2013-12-08 01:58+0100\n"
-"PO-Revision-Date: 2013-12-08 02:28+0100\n"
+"POT-Creation-Date: 2013-12-08 19:14+0100\n"
+"PO-Revision-Date: 2013-12-08 19:14+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -14,6 +14,67 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-KeywordsList: gettext\n"
 "X-Poedit-SearchPath-0: C:\\projects\\chess\\webchess\n"
+
+#: C:\projects\chess\webchess/chess.php:148
+msgid " - Your Move"
+msgstr " - Ihr Umzug"
+
+#: C:\projects\chess\webchess/chess.php:150
+msgid " - Opponent's Move"
+msgstr "- Gegner"
+
+#: C:\projects\chess\webchess/chess.php:179
+msgid "Start of game"
+msgstr "Beginn des Spiels"
+
+#: C:\projects\chess\webchess/chess.php:180
+msgid "Start"
+msgstr "Start"
+
+#: C:\projects\chess\webchess/chess.php:181
+msgid "Go back five halfmoves"
+msgstr "Zurück fünf Halbzüge"
+
+#: C:\projects\chess\webchess/chess.php:182
+msgid "Go back one halfmove"
+msgstr "Gehen Sie einen halfmove"
+
+#: C:\projects\chess\webchess/chess.php:183
+msgid "Go forward one halfmove"
+msgstr "Gehe vorwärts ein halfmove"
+
+#: C:\projects\chess\webchess/chess.php:184
+msgid "Go forward five halfmoves"
+msgstr "Zurück fünf Halbzüge"
+
+#: C:\projects\chess\webchess/chess.php:185
+msgid "End of game"
+msgstr "Ende des Spiels"
+
+#: C:\projects\chess\webchess/chess.php:186
+msgid "End"
+msgstr "Ende"
+
+#: C:\projects\chess\webchess/chess.php:247
+msgid "When castling, just move the king (the rook will move automatically)."
+msgstr ""
+"Wenn Rochade, bewegen Sie einfach den König (der rook automatisch bewegen)."
+
+#: C:\projects\chess\webchess/chess.php:248
+msgid "Captured pieces"
+msgstr "Geschlagene Figuren"
+
+#: C:\projects\chess\webchess/footer.php:8
+msgid "Version"
+msgstr "Version"
+
+#: C:\projects\chess\webchess/footer.php:9
+#, php-format
+msgid ""
+"%s is Free Software released under the GNU General Public License (GPL)."
+msgstr ""
+"%s ist Freie Software unter der GNU General Public License (GPL) "
+"veröffentlicht."
 
 #: C:\projects\chess\webchess/index.php:37
 #: C:\projects\chess\webchess/index.php:77
@@ -29,7 +90,6 @@ msgid "Username"
 msgstr "Benutzername"
 
 #: C:\projects\chess\webchess/index.php:87
-#: C:\projects\chess\webchess/lang.php:50
 #: C:\projects\chess\webchess/newuser.php:93
 #: C:\projects\chess\webchess/opponentspassword.php:118
 msgid "Password"
@@ -48,47 +108,75 @@ msgstr "Neues Konto"
 msgid "Welcome to"
 msgstr "Willkommen bei"
 
-#: C:\projects\chess\webchess/index.php:111
-#: C:\projects\chess\webchess/index.php:123
-#: C:\projects\chess\webchess/mainmenu.php:502
-#: C:\projects\chess\webchess/newuser.php:47
-#: C:\projects\chess\webchess/newuser.php:72
-#: C:\projects\chess\webchess/newuser.php:141
-#: C:\projects\chess\webchess/opponentspassword.php:143
-#: C:\projects\chess\webchess/viewmessage.php:55
-msgid "WebChess"
-msgstr "WebChess"
-
 #: C:\projects\chess\webchess/index.php:112
-msgid "Use a valid username and password to gain access to WebChess."
+msgid "Use a valid username and password to gain access."
 msgstr ""
-"Verwenden Sie einen gültigen Benutzernamen und Passwort, um Zugriff auf "
-"WebChess zu gewinnen."
+"Verwenden Sie einen gültigen Benutzernamen und Passwort für den Zugang."
 
-#: C:\projects\chess\webchess/index.php:122
-#: C:\projects\chess\webchess/newuser.php:140
-#: C:\projects\chess\webchess/opponentspassword.php:142
-msgid "Version"
-msgstr "Version"
+#: C:\projects\chess\webchess/mailmsginvite.php:23
+#, php-format
+msgid "%s: %s invites you to play a new game."
+msgstr "%s: %s lädt Sie ein neues Spiel zu spielen."
 
-#: C:\projects\chess\webchess/index.php:122
-#: C:\projects\chess\webchess/newuser.php:140
-#: C:\projects\chess\webchess/opponentspassword.php:142
-msgid "last updated"
-msgstr "zuletzt aktualisiert"
+#: C:\projects\chess\webchess/mailmsginvite.php:27
+#, php-format
+msgid "%s has invited you to play a new game."
+msgstr "%s hat Sie eingeladen, ein neues Spiel zu spielen."
 
-#: C:\projects\chess\webchess/index.php:122
-#: C:\projects\chess\webchess/newuser.php:140
-#: C:\projects\chess\webchess/opponentspassword.php:142
-msgid "August"
-msgstr "August"
-
-#: C:\projects\chess\webchess/index.php:123
-#: C:\projects\chess\webchess/newuser.php:141
-#: C:\projects\chess\webchess/opponentspassword.php:143
-msgid "is Free Software released under the GNU General Public License (GPL)."
+#: C:\projects\chess\webchess/mailmsginvite.php:29
+#: C:\projects\chess\webchess/mailmsgmove.php:33
+#: C:\projects\chess\webchess/mailmsgresign.php:34
+#: C:\projects\chess\webchess/mailmsgwithdraw.php:24
+#, php-format
+msgid ""
+"This message has been automatically been sent by %s and should not be "
+"replied to"
 msgstr ""
-"ist Freie Software unter der GNU General Public License (GPL) veröffentlicht."
+"Diese Nachricht wurde automatisch von %s geschickt worden und sollten nicht "
+"beantwortet werden"
+
+#: C:\projects\chess\webchess/mailmsginvite.php:32
+#: C:\projects\chess\webchess/mailmsgmove.php:36
+#: C:\projects\chess\webchess/mailmsgresign.php:37
+#: C:\projects\chess\webchess/mailmsgtest.php:26
+#: C:\projects\chess\webchess/mailmsgwithdraw.php:26
+#, php-format
+msgid "Go to: %s to play."
+msgstr "Gehen Sie zu: %s zu spielen."
+
+#: C:\projects\chess\webchess/mailmsgmove.php:23
+#, php-format
+msgid "%s: %s moved %s on board %s."
+msgstr "%s: %s bewegt %s an Bord %s."
+
+#: C:\projects\chess\webchess/mailmsgmove.php:29
+#, php-format
+msgid "Your opponent %s has played the following move:"
+msgstr "Dein Gegner %s hat die folgende Bewegung gespielt:"
+
+#: C:\projects\chess\webchess/mailmsgmove.php:31
+msgid "It is your turn now"
+msgstr "Es ist nun an der Reihe"
+
+#: C:\projects\chess\webchess/mailmsgresign.php:23
+#, php-format
+msgid "%s: %s resigns on board %s."
+msgstr "%s: %s tritt zurück an Bord %s."
+
+#: C:\projects\chess\webchess/mailmsgresign.php:29
+#, php-format
+msgid "Your oppenent %s has resigned the game on board %s."
+msgstr "Ihre oppenent %s hat das Spiel an Bord %s zurückgetreten."
+
+#: C:\projects\chess\webchess/mailmsgwithdraw.php:22
+#, php-format
+msgid "%s: Invitation withdrawn"
+msgstr "%s: Einladung zurückgenommen"
+
+#: C:\projects\chess\webchess/mailmsgwithdraw.php:23
+#, php-format
+msgid "%s has withdrawn their invitation to play a new game."
+msgstr "%s hat die Einladung, ein neues Spiel zu spielen zurückgezogen."
 
 #: C:\projects\chess\webchess/mainmenu.php:502
 msgid "Main Menu"
@@ -343,8 +431,9 @@ msgid "Master (2200-...)"
 msgstr "Meister (2200 - ...)"
 
 #: C:\projects\chess\webchess/mainmenu.php:856
-msgid "You can customize WebChess with these general settings."
-msgstr "Sie können WebChess mit diesen allgemeinen Einstellungen anpassen."
+#, php-format
+msgid "You can customize %s with these general settings."
+msgstr "Sie können %s mit diesen allgemeinen Einstellungen anpassen."
 
 #: C:\projects\chess\webchess/mainmenu.php:869
 msgid "Issue a challenge"
@@ -662,15 +751,14 @@ msgid "Register"
 msgstr "Registrieren"
 
 #: C:\projects\chess\webchess/newuser.php:132
-msgid "Welcome to WebChess!"
-msgstr "Willkommen auf WebChess!"
+#, php-format
+msgid "Welcome to %s!"
+msgstr "Willkommen bei %s!"
 
 #: C:\projects\chess\webchess/newuser.php:133
-msgid ""
-"You must remember your nick and password to be able to gain access to "
-"WebChess."
+msgid "You must remember your nick and password to be able to gain access."
 msgstr ""
-"Sie müssen bedenken Nutzername und Passwort, um Zugang zu WebChess gewinnen."
+"Sie müssen bedenken Nutzername und Passwort, um Zugang zu erhalten sein."
 
 #: C:\projects\chess\webchess/viewmessage.php:55
 msgid "Message View"
@@ -692,8 +780,8 @@ msgstr ""
 "konnte nicht gefunden werden."
 
 #: C:\projects\chess\webchess/viewmessage.php:92
-msgid "Webchess Administrator"
-msgstr "WebChess Administrator"
+msgid "Administrator"
+msgstr "Administrator"
 
 #: C:\projects\chess\webchess/viewmessage.php:97
 msgid "From:"

@@ -25,15 +25,16 @@
     #ini_set('display_errors', 'On');
 
 	/* load settings */
-	if (!isset($_CONFIG))
+	if (!isset($_CONFIG)) {
 		require 'config.php';
+        include_once 'lang.php';
+	}
 
 	/* load external functions for setting up new game */
 	require 'chessutils.php';
 	require 'chessconstants.php';
 	require 'newgame.php';
 	require 'chessdb.php';
-        require 'lang.php';
 
 
 	/* allow WebChess to be run on PHP systems < 4.1.0, using old http vars */
@@ -494,12 +495,12 @@
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" href="mainmenu.css" type="text/css" />
 <script type="text/javascript" src="javascript/tablesort.js"></script>
 <script type="text/javascript" src="javascript/menu.js"></script>
 <script type="text/javascript" src="javascript/messages.js"></script>
-<title><?php echo gettext("WebChess") . " :: " . gettext("Main Menu");?></title>
+<title><?php echo APP_NAME . " :: " . gettext("Main Menu");?></title>
 	<script type="text/javascript">
 		function validatePersonalInfo()
 		{
@@ -580,7 +581,7 @@
 </head>
 <body>
 	<div id="header">
-	  <div id="heading">WebChess</div>
+	  <div id="heading"><?php echo APP_NAME; ?></div>
 	</div>
 <div id="content">
 <div id="navcontainer">

@@ -22,13 +22,14 @@
 	session_start();
 
 	/* load settings */
-	if (!isset($_CONFIG))
+	if (!isset($_CONFIG)) {
 		require 'config.php';
+        include_once 'lang.php';
+	}
 
 	if (!isset($_CHESSUTILS))
 		require 'chessutils.php';
 
-        require "lang.php";
 
 	fixOldPHPVersions();
 	if ($CFG_NEW_USERS_ALLOWED==false)
@@ -44,7 +45,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 <link rel="stylesheet" href="userlogin.css" type="text/css" />
 <script type="text/javascript" src="javascript/cookies.js"></script>
-<title><?php echo gettext("WebChess") . " :: " . gettext("Create New User"); ?></title>
+<title><?php echo APP_NAME . " :: " . gettext("Create New User"); ?></title>
 
 	<script type="text/javascript">
 		function validateForm()
@@ -69,7 +70,7 @@
 
 <body>
 <div id="header">
-  <div id="heading"><?php echo gettext("WebChess") . " :: " . gettext("Create New User");?></div>
+  <div id="heading"><?php echo APP_NAME . " :: " . gettext("Create New User");?></div>
 </div>
 <div id="ctr" align="center">
 	<div class="preferences">
@@ -129,16 +130,13 @@
 		</div>
 		<div class="login-text">
 			<div class="ctr"><img src="images/webchess.jpg" width="65" height="92" alt="security" /></div>
-                    <p><?php echo gettext("Welcome to WebChess!");?></p>
-                    <p><?php echo gettext("You must remember your nick and password to be able to gain access to WebChess.");?></p>
+                    <p><?php printf(gettext("Welcome to %s!"), APP_NAME);?></p>
+                    <p><?php echo gettext("You must remember your nick and password to be able to gain access.");?></p>
     	</div>
 		<div class="clr"></div>
 	</div>
 </div>
 <div id="break"></div>
-<div class="footer" align="center">
-	<div align="center"><?php echo "WebChess " . gettext("Version") . " 1.0.0, " . gettext("last updated") ." ". gettext("August"). " 15, 2010"?></div>
-	<div align="center"><a href="http://webchess.sourceforge.net/"><?php echo gettext("WebChess");?></a> <?php echo gettext("is Free Software released under the GNU General Public License (GPL).");?></div>
-</div>
+<?php include_once('footer.php'); ?>
 </body>
 </html>
