@@ -1,21 +1,23 @@
-+-------------+-----------------------------------------------------------------------------+------+-----+---------------------+----------------+
-| Field       | Type            | Null | Key | Default             | Extra          |
-+-------------+-----------------------------------------------------------------------------+------+-----+---------------------+----------------+
-| gameID      | smallint(6)            |      | PRI | NULL                | auto_increment |
-| whitePlayer | mediumint(9)            |      |     | 0                   |                |
-| blackPlayer | mediumint(9)            |      |     | 0                   |                |
-| gameMessage | enum('playerInvited','inviteDeclined','draw','playerResigned','checkMate') | YES  |     | NULL                |                || messageFrom | enum('black','white')            | YES  |     | NULL                |                |
-| dateCreated | datetime            |      |     | 0000-00-00 00:00:00 |                |
-| lastMove    | datetime            |      |     | 0000-00-00 00:00:00 |                |
-+-------------+-----------------------------------------------------------------------------+------+-----+---------------------+----------------+
++-------------+-------------------------------------------------------------------------------+------+-----+---------+----------------+
+| Field       | Type                                                                          | Null | Key | Default | Extra          |
++-------------+-------------------------------------------------------------------------------+------+-----+---------+----------------+
+| gameID      | smallint(6)                                                                   | NO   | PRI | NULL    | auto_increment |
+| whitePlayer | mediumint(9)                                                                  | NO   |     | NULL    |                |
+| blackPlayer | mediumint(9)                                                                  | NO   |     | NULL    |                |
+| gameMessage | enum('','playerInvited','inviteDeclined','draw','playerResigned','checkMate') | YES  |     | NULL    |                |
+| messageFrom | enum('','black','white')                                                      | YES  |     | NULL    |                |
+| dateCreated | datetime                                                                      | NO   |     | NULL    |                |
+| lastMove    | datetime                                                                      | NO   |     | NULL    |                |
++-------------+-------------------------------------------------------------------------------+------+-----+---------+----------------+
 
 
-CREATE TABLE games (
-	gameID SMALLINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	whitePlayer MEDIUMINT NOT NULL,
-	blackPlayer MEDIUMINT NOT NULL,
-	gameMessage ENUM('playerInvited', 'inviteDeclined', 'draw', 'playerResigned', 'checkMate') NULL,
-	messageFrom ENUM('black', 'white') NULL,
-	dateCreated DATETIME NOT NULL,
-	lastMove DATETIME NOT NULL
-);
+CREATE TABLE `games` (
+  `gameID` smallint(6) NOT NULL AUTO_INCREMENT,
+  `whitePlayer` mediumint(9) NOT NULL,
+  `blackPlayer` mediumint(9) NOT NULL,
+  `gameMessage` enum('','playerInvited','inviteDeclined','draw','playerResigned','checkMate') DEFAULT NULL,
+  `messageFrom` enum('','black','white') DEFAULT NULL,
+  `dateCreated` datetime NOT NULL,
+  `lastMove` datetime NOT NULL,
+  PRIMARY KEY (`gameID`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

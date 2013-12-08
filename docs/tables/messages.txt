@@ -1,18 +1,19 @@
 +-------------+-------------------------------------+------+-----+---------+----------------+
 | Field       | Type                                | Null | Key | Default | Extra          |
 +-------------+-------------------------------------+------+-----+---------+----------------+
-| msgID       | int(11)                             |      | PRI | NULL    | auto_increment |
-| gameID      | smallint(6)                         |      |     | 0       |                |
-| msgType     | enum('undo','draw')                 |      |     | undo    |                |
-| msgStatus   | enum('request','approved','denied') |      |     | request |                |
-| destination | enum('black','white')               |      |     | black   |                |
+| msgID       | int(11)                             | NO   | PRI | NULL    | auto_increment |
+| gameID      | smallint(6)                         | NO   |     | NULL    |                |
+| msgType     | enum('undo','draw')                 | NO   |     | NULL    |                |
+| msgStatus   | enum('request','approved','denied') | NO   |     | NULL    |                |
+| destination | enum('black','white')               | NO   |     | NULL    |                |
 +-------------+-------------------------------------+------+-----+---------+----------------+
 
 
-CREATE TABLE messages (
-	msgID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	gameID SMALLINT NOT NULL,
-	msgType ENUM('undo', 'draw') NOT NULL,
-	msgStatus ENUM('request', 'approved', 'denied') NOT NULL,
-	destination ENUM('black', 'white') NOT NULL
-);
+CREATE TABLE `messages` (
+  `msgID` int(11) NOT NULL AUTO_INCREMENT,
+  `gameID` smallint(6) NOT NULL,
+  `msgType` enum('undo','draw') NOT NULL,
+  `msgStatus` enum('request','approved','denied') NOT NULL,
+  `destination` enum('black','white') NOT NULL,
+  PRIMARY KEY (`msgID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
