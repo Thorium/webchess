@@ -1,9 +1,11 @@
 Known issues;
 
-   - If a player reloads the board while a turn is being processed then the board may be incomplete.
+   - If a player reloads the board while a turn is being processed then the board may be loaded with incomplete data. Reloading again will remedy this.
 
 WebChess 1.0.0rc3 (2013-12-07)
-
+ + changes:
+   - Updated the chessdb.php::saveGame() to be more efficient so moves are processed quicker.
+   - Added Deutsch translations for gettext. This is disabled in lang.php by default.
  + minor fixes:
    - Fixed issue where you couldn't create a game
    - Fixed issue where you couldn't accept a game
@@ -16,8 +18,7 @@ WebChess 1.0.0rc3 (2013-12-07)
    - These fixes were minimal just to get a game up and running and see if it's worth playing
    - Changed the window.onload to document.onready (using domready.js)
    - Fixed issue with columns collapsing if they contained no pieces
-   - Fixed issue with slow moves (changed single SQL inserts in to a batch insert)
- 
+   
 WebChess 1.0.0rc2 (2010-08-14)
  + minor changes:
    - user interface appearance changes

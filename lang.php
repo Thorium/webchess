@@ -27,11 +27,16 @@ if ( ! function_exists('gettext')) {
 }
 
 // Must do some testing before releasing it to mainstream
+
+// Note that any changes to a .mo file won't be picked up by Apache until it's
+// restarted due to caching. The PHP CLI can be used for testing  
 if($GETTEXT_SUPPORT) {
 	//$LANGUAGE = 'es_ES';
-	$LANGUAGE = 'en_US';
-
+ 	//$LANGUAGE = 'de_DE';
+ 	$LANGUAGE = 'en_US';
+ 	
 	putenv("LANG=$LANGUAGE"); 
+	putenv("LC_ALL=$LANGUAGE");
 	setlocale(LC_ALL, $LANGUAGE);
 
 	// Set the text domain as 'webchess'
@@ -39,4 +44,3 @@ if($GETTEXT_SUPPORT) {
 	bindtextdomain($domain, "./locale"); 
 	textdomain($domain);
 }
-?>
