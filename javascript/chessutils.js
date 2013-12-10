@@ -1,4 +1,4 @@
-// $Id: chessutils.js,v 1.8 2010/08/18 02:48:19 sandking Exp $
+// $Id: chessutils.js,v 1.81 2013/12/08 14:00:00 gitjake Exp $
 
 /*
     This file is part of WebChess. http://webchess.sourceforge.net
@@ -342,4 +342,14 @@ function historyToFEN()
 		epSquare = '-';
 	}
 	return FEN;
+}
+/**
+ * Returns a translation of the string if one is available
+ * @see chess.php for supported messages
+ * @author gitjake
+ * @param {String} message
+ * @return {String}
+ */
+function __(message) {
+	return (undefined === typeof i18nMessages[message] ? message : i18nMessages[message] );
 }

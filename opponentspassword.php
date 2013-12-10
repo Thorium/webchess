@@ -90,7 +90,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" href="userlogin.css" type="text/css" />
-<title>WebChess :: <?php echo gettext("Login");?></title>
+<title><?php echo APP_NAME; ?> :: <?php echo gettext("Login");?></title>
 <script language="javascript" type="text/javascript">
 window.onload = function()
 {
@@ -107,7 +107,7 @@ window.onload = function()
 <body>
 
 <div id="header">
-  <div id="heading">WebChess :: <?php echo gettext("Login");?></div>
+  <div id="heading"><?php echo APP_NAME; ?> :: <?php echo gettext("Login");?></div>
 </div>
 
 <div id="ctr" align="center">
@@ -136,11 +136,8 @@ window.onload = function()
 
 <div id="break"></div>
 <noscript>
-!Warning! Javascript must be enabled for proper operation of WebChess
+!Warning! Javascript must be enabled for proper operation of <?php echo APP_NAME; ?>
 </noscript>
-<div class="footer" align="center">
-<div align="center"><?php echo "WebChess " . gettext("Version") . " 1.0.0, " . gettext("last updated") ." ". gettext("August"). " 15, 2010"?></div>
-<div align="center"><a href="http://webchess.sourceforge.net/"><?php echo gettext("WebChess");?></a> <?php echo gettext("is Free Software released under the GNU General Public License (GPL).");?></div>
-</div>
+<?php include_once('footer.php'); ?>
 </body>
 </html>

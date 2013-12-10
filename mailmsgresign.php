@@ -19,8 +19,19 @@
     along with WebChess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-	$mailsubject = "WebChess: ".$opponent." resigns on board ".$gameID.".";
-	$mailmsg = "Your opponent ".$opponent." has resigned the game on board ".$gameID.".";
-	$mailmsg .= "\n\nThis message has been automatically been sent by WebChess and should not be replied to.\n";
-	$mailmsg .= "Go to: " . $CFG_MAINPAGE . " to play.\n";
-?>
+	$mailsubject = sprintf(
+		gettext('%s: %s resigns on board %s.')
+		,APP_NAME
+		,$opponent
+		,$gameID
+	);
+	$mailmsg = sprintf(
+		gettext('Your oppenent %s has resigned the game on board %s.')
+		,$opponent
+		,$gameID
+	);
+	
+	$termMsg = sprintf(gettext('This message has been automatically been sent by %s and should not be replied to'), APP_NAME);
+	$mailmsg .= "\n\n" . $termMsg . ".\n";
+	
+	$mailmsg .= sprintf(gettext('Go to: %s to play.'), $CFG_MAINPAGE) . "\n";

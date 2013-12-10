@@ -1,5 +1,5 @@
 <?php
-// $Id: capt.php,v 1.5 2010/08/14 16:57:54 sandking Exp $
+// $Id: capt.php,v 1.51 2013/12/07 20:30:00 gitjake Exp $
 
 /*
     This file is part of WebChess. http://webchess.sourceforge.net
@@ -28,7 +28,7 @@ $c=0;
 $d=0;
 echo('var captPieces = [[');
 while($row=mysql_fetch_array($f, MYSQL_ASSOC)){
-	if(ereg("white",$row['curColor']))
+	if(false !== stripos($row['curColor'], 'white'))
 		$c++;
 	if($c==1){
 		echo"], [";

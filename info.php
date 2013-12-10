@@ -1,9 +1,12 @@
-<?
+<?php
 
 /* connect to database */
 require 'connectdb.php';
-
-$f=mysql_query("select gameID, p1.nick as white, p2.nick as black, lastMove from (games inner join players as p1 on whitePlayer=p1.playerID) inner join players p2 on blackPlayer=p2.playerID where gameID <=".$_SESSION['ViewGame']." and dateCreated != lastMove order by gameID DESC limit 0,1");
+$viewGame = 0;
+if (isset($_SESSION['ViewGame'])) {
+	$viewGame = $_SESSION['ViewGame'];
+}
+$f=mysql_query("select gameID, p1.nick as white, p2.nick as black, lastMove from (games inner join players as p1 on whitePlayer=p1.playerID) inner join players p2 on blackPlayer=p2.playerID where gameID <=".$viewGame." and dateCreated != lastMove order by gameID DESC limit 0,1");
 
 
 $c=0;

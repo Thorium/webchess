@@ -1,21 +1,24 @@
-+-----------+----------+------+-----+---------+----------------+
-| Field      | Type     | Null | Key | Default | Extra          |
-+-----------+----------+------+-----+---------+----------------+
-| playerID   | int(11)  |      | PRI | NULL    | auto_increment |
-| password   | char(64) |      |     |         |                |
-| firstName  | char(64) |      |     |         |                |
-| lastName   | char(64) |      |     |         |                |
-| nick       | char(64) |      | UNI |         |                |
-| lastAccess | datetime | YES  |     | NULL    |                |
-| userlevel  | char(16) |      |     |         |                |
-+-----------+----------+------+-----+---------+----------------+
++------------+-------------+------+-----+---------+----------------+
+| Field      | Type        | Null | Key | Default | Extra          |
++------------+-------------+------+-----+---------+----------------+
+| playerID   | int(11)     | NO   | PRI | NULL    | auto_increment |
+| password   | char(32)    | NO   |     | NULL    |                |
+| firstName  | varchar(64) | NO   |     | NULL    |                |
+| lastName   | varchar(64) | NO   |     | NULL    |                |
+| nick       | varchar(64) | NO   | UNI | NULL    |                |
+| lastAccess | datetime    | YES  |     | NULL    |                |
+| userlevel  | tinyint(1)  | NO   |     | 1       |                |
++------------+-------------+------+-----+---------+----------------+
 
-CREATE TABLE players (
-	playerID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	password CHAR(64) NOT NULL,
-	firstName CHAR(64) NOT NULL,
-	lastName CHAR(64) NOT NULL,
-	nick CHAR(64) NOT NULL UNIQUE,
-	lastAccess DATETIME,
-	userlevel CHAR(16) NOT NULL DEFAULT ''
-);
+
+CREATE TABLE `players` (
+  `playerID` int(11) NOT NULL AUTO_INCREMENT,
+  `password` char(32) NOT NULL,
+  `firstName` varchar(64) NOT NULL,
+  `lastName` varchar(64) NOT NULL,
+  `nick` varchar(64) NOT NULL,
+  `lastAccess` datetime DEFAULT NULL,
+  `userlevel` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`playerID`),
+  UNIQUE KEY `nick` (`nick`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

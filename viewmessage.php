@@ -20,15 +20,16 @@
 	session_start();
 
 	/* load settings */
-	if (!isset($_CONFIG))
+	if (!isset($_CONFIG)) {
 		require 'config.php';
+        include_once 'lang.php';
+	}
 
 	/* load external functions for setting up new game */
 	require 'chessutils.php';
 	require 'chessconstants.php';
 	require 'newgame.php';
 	require 'chessdb.php';
-        require 'lang.php';
 
 
 
@@ -49,10 +50,10 @@
 
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" href="mainmenu.css" type="text/css" />
     <script type="text/javascript" src="javascript/messages.js"></script>
-    <title><?php echo gettext("WebChess") . " :: " . gettext("Message View");?></title>
+    <title><?php echo APP_NAME . " :: " . gettext("Message View");?></title>
 </head>
 <body>
 
@@ -89,12 +90,12 @@
                     $tempRes = mysql_fetch_array($innerRes, MYSQL_ASSOC);
                     $FromPlayer = $tempRes['nick'];
                 } else {
-                    $FromPlayer = gettext("Webchess Administrator");
+                    $FromPlayer = APP_NAME . gettext("Administrator");
                 }
                 ?>
                     <div class="messageheader">
                     <?php
-                        echo gettext("From:") . " " . $FromPlayer; 
+                        echo gettext("From:") . " " . htmlspecialchars($FromPlayer); 
                         if($tmpGame['fromID']!=0) {
                             echo " (<a href=\"javascript:MessagePlayer(" . $tmpGame['fromID'] . ")\">" . gettext("Reply") . "</a>)"; 
                         }
@@ -109,9 +110,9 @@
                     <input type="hidden" name="messageID" />
                     <input type="hidden" name="ToDo" value="HideMessage" />
                     </form>
-                    <div class="inputlabel"> <?php echo $tmpGame['title'];?> </div>
+                    <div class="inputlabel"> <?php echo htmlspecialchars($tmpGame['title']);?> </div>
                     <div>
-                        <p> <?php echo str_replace("\n", "</p><p>", $tmpGame['text']);?> </p>
+                        <p> <?php echo str_replace("\n", "</p><p>", htmlspecialchars($tmpGame['text']));?> </p>
                     </div>
                 <?php
                 }

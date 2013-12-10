@@ -19,10 +19,18 @@
     along with WebChess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-	$mailsubject = "WebChess: ".$opponent." moved ".$move." on board ".$gameID.".";
-	$mailmsg = "Your opponent ".$opponent." has played the following move:";
+	$mailsubject = sprintf(
+		gettext('%s: %s moved %s on board %s.')
+		,APP_NAME
+		,$opponent
+		,$move
+		,$gameID
+	);
+	$mailmsg = sprintf(gettext('Your opponent %s has played the following move:'), $opponent);
 	$mailmsg .= "\n".$move."\n\n";
-	$mailmsg .= "It is your turn now\n\n";
-	$mailmsg .= "\n\nThis message has been automatically been sent by WebChess and should not be replied to.\n";
-	$mailmsg .= "Go to: " . $CFG_MAINPAGE . " to play.\n";
-?>
+	$mailmsg .= gettext('It is your turn now') . "\n\n";
+	
+	$termMsg = sprintf(gettext('This message has been automatically been sent by %s and should not be replied to'), APP_NAME);
+	$mailmsg .= "\n\n" . $termMsg . ".\n";
+	
+	$mailmsg .= sprintf(gettext('Go to: %s to play.'), $CFG_MAINPAGE) . "\n";

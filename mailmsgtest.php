@@ -19,9 +19,8 @@
     along with WebChess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-	$mailsubject = "WebChess: Test Message";
+	$mailsubject = APP_NAME . ': Test Message';
 	$mailmsg = "Congratulations!!!\n
 	If you can see this message, you have successfully setup your email notification!\n\n
 	This message has been automatically been sent by WebChess and should not be replied to.\n";
-	$mailmsg .= "Go to: " . $CFG_MAINPAGE . " to play.\n";
-?>
+	$mailmsg .= sprintf(gettext('Go to: %s to play.'), $CFG_MAINPAGE) . "\n";

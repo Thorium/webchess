@@ -1,5 +1,5 @@
 <?php
-// $Id: gui.php,v 1.13 2010/08/15 10:29:00 sandking Exp $
+// $Id: gui.php,v 1.14 2013/12/07 20:00:00 gitjake Exp $
 
 /*
     This file is part of WebChess. http://webchess.sourceforge.net
@@ -173,6 +173,7 @@
 	function writeHistoryPGN()
 	{
 		global $history, $numMoves;
+		$moves = array();
 
 		for ($i = 0; $i <= $numMoves; $i++)
 		{
@@ -220,7 +221,11 @@
 			echo($comma);
 			if($i % 4 == 0) // Four moves on each line
 				echo("\n");
-			echo ("['" . $moves[$i][0]."', '".$moves[$i][1]."']");
+			$moves2 = '';
+			if (isset($moves[$i][1])) {
+				$moves2 = $moves[$i][1];
+			}
+			echo ("['" . $moves[$i][0]."', '".$moves2."']");
 			$comma = ', ';
 		}
 		echo("];\n");
@@ -313,8 +318,8 @@
 		set_FEN($FEN);
 		#get_current_Position();
 		#return;
-		$xheader ="[Event \"WebChess Board #{$_SESSION['gameID']}\"]\n";
-                $xheader .="[Site \"WebChess\"]\n";
+		$xheader ='[Event "' . APP_NAME . " Board #{$_SESSION['gameID']}\"]\n";
+                $xheader .='[Site "' . APP_NAME . "\"]\n";
                 $xheader .="[Date \"$gStart\"]\n";
                 $xheader .="[Round \"-\"]\n";
                 $xheader .="[White \"$pWhiteL, $pWhiteF\"]\n";

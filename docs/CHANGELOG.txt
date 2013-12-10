@@ -1,3 +1,26 @@
+2013-12-08 (unofficial 1.0.0rc3 version - https://github.com/gitjake/webchess )
+
+- Updated the chessdb.php::saveGame() to be more efficient so moves are processed quicker.
+- Added Deutsch translations for gettext. This is disabled in lang.php by default.
+- The replay button titles and text can now be translated
+- Email messages can now be translated
+- Fixed issue where you couldn't create a game
+- Fixed issue where you couldn't accept a game
+- Fixed issue where the board wouldn't load
+- Fixed XSS issue in messages
+- Fixed issue where emails weren't being sent (From email address had mistype in variable name)
+- Removed PHP short tags
+- Added missing '' ENUM value games table columns
+- Added missing playersuserlevel column
+- Updated players table definition to hold the md5 password and change the CHARs to VARCHARs
+- Removed some PHP warnings and notices
+- These fixes were minimal just to get a game up and running and see if it's worth playing
+- Changed the window.onload to document.onready (using domready.js)
+- Fixed issue with columns collapsing if they contained no pieces
+- Moved footer html in to footer.php
+- Changes the charset of main pages to UTF-8
+- Replaces the hardcoded app name 'WebChess' with a constant in config.php
+
 2013-01-10 (unofficial version - https://github.com/Thorium/webchess )
 - user interface appearance changes
 - watch also other players' games

@@ -34,7 +34,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 <link rel="stylesheet" href="mainmenu.css" type="text/css" />
-<title>WebChess :: Invite Player</title>
+<title><?php echo APP_NAME; ?> :: Invite Player</title>
 
 	<script type="text/javascript">
 		function getObject(obj) {
@@ -121,7 +121,7 @@
 
 <body>
 	<div id="header">
-	  <div id="heading">WebChess :: Invite a player to play a new game</div>
+	  <div id="heading"><?php echo APP_NAME; ?> :: Invite a player to play a new game</div>
 	</div>
 <div id="content">
 <div id="navcontainer">

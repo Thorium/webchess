@@ -1,5 +1,8 @@
 <?php
-// $Id: makeConfig.php,v 1.1 2010/08/23 02:53:46 sandking Exp $
+
+// exit('halt'); // script not needed anymore after install and configuration are complete
+
+// $Id: makeConfig.php,v 1.11 2013/12/07 20:00:00 gitjake Exp $
 
 /*
     This file is part of WebChess. http://webchess.sourceforge.net
@@ -53,7 +56,7 @@ header('Content-Disposition: attachment; filename="config.php');
 //We see if the administrator has provided a new user to be used. If it is so
 //(FALSE case) we will create the new user, if it is not (TRUE case) we won't
 //create any user.
-if ($_POST['reuse']=='true')
+if (isset($_POST['reuse']) && $_POST['reuse']=='true')
 {
    //In case we reuse, there is no need to create the new username.
    $user=$_POST['user_last'];
@@ -101,28 +104,46 @@ echo "\$CFG_MINAUTORELOAD = ".$_POST['autoreload'].";\n";
 
 
 echo "\$CFG_USEEMAILNOTIFICATION = ";
-if ($_POST['mail_not']=='1')
+if (isset($_POST['mail_not']) &&  $_POST['mail_not']=='1')
    echo "TRUE;\n";
 else echo "FALSE;\n";
 
-echo "\$CFG_MAILADRESS = '".$_POST['mail_adr']."';\n";
+echo "\$CFG_MAILADDRESS = '".$_POST['mail_adr']."';\n";
 
 echo "\$CFG_MAINPAGE = '".$_POST['url']."';\n";
 echo "\$CFG_MAXUSERS = ".$_POST['maxUsers'].";\n";
 echo "\$CFG_MAXACTIVEGAMES = ".$_POST['maxGames'].";\n";
 echo "\$CFG_NICKCHANGEALLOWED = ";
-if ($_POST['changeNick']=='1')
+if (isset($_POST['changeNick']) &&  $_POST['changeNick']=='1')
    echo "TRUE;\n";
 else echo "FALSE;\n";
 
 echo "\$CFG_NEW_USERS_ALLOWED = ";
-if ($_POST['newUsers']=='1')
+if (isset($_POST['newUsers']) &&  $_POST['newUsers']=='1')
    echo "TRUE;\n";
 else echo "FALSE;\n";
 
 echo "\$CFG_BOARDSQUARESIZE = ".$_POST['size'].";\n";
 
 ?>
+
+/* Application constants */
+define('APP_NAME', 'WebChess'); // The name of the app that is shown in the title
+define('APP_VERSION', '1.0.3rc'); // The version of the app
+
+/* I18N constants */
+define('I18N_GETTEXT_SUPPORT', false); // enable gettext for fetching translations
+define('I18N_LOCALE', 'de_DE'); // locale to use (requires the webchess.mo file for the locale)
+
+/* mysql table names */
+define('communication', 'communication');
+define('history', 'history');
+define('games', 'games');
+define('messages', 'messages');
+define('pieces', 'pieces');
+define('preferences', 'preferences');
+define('players', 'players');
+
 /* mysql table names */
 $CFG_TABLE[communication] = "communication";
 $CFG_TABLE[games] = "games";
@@ -132,7 +153,7 @@ $CFG_TABLE[pieces] = "pieces";
 $CFG_TABLE[players] = "players";
 $CFG_TABLE[preferences] = "preferences";
 
-<?
+<?php 
 echo "\$CFG_IMAGE_EXT = '".$_POST['imageExtension']."';\n";
 echo "?>";
 ?>

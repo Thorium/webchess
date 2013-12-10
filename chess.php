@@ -1,5 +1,5 @@
 <?php
-// $Id: chess.php,v 1.13 2010/08/18 09:38:56 sandking Exp $
+// $Id: chess.php,v 1.15 2013/12/08 14:00:00 gitjake Exp $
 
 /*
     This file is part of WebChess. http://webchess.sourceforge.net
@@ -22,8 +22,10 @@
 	session_start();
 
 	/* load settings */
-	if (!isset($_CONFIG))
+	if (!isset($_CONFIG)) {
 		require 'config.php';
+		include_once 'lang.php';
+	}
 
 	/* define constants */
 	require 'chessconstants.php';
@@ -61,7 +63,7 @@
 	$blackNick = mysql_result($tmpNick, 0);
 
 	/* load game */
-	$isInCheck = ($_POST['isInCheck'] == 'true');
+	$isInCheck = (isset($_POST['isInCheck']) && ($_POST['isInCheck'] == 'true'));
 	$isCheckMate = false;
 	$isPromoting = false;
 	$isUndoing = false;
@@ -74,13 +76,16 @@
 		doUndo();
 		saveGame();
 	}
-	elseif (($_POST['promotion'] != "") && ($_POST['toRow'] != "") && ($_POST['toCol'] != ""))
+	elseif (!empty($_POST['promotion']) && isset($_POST['toRow']) && ('' !== $_POST['toRow']) && isset($_POST['toCol']) && ('' !== $_POST['toCol'])) 
 	{
 		savePromotion();
 		$board[$_POST['toRow']][$_POST['toCol']] = $_POST['promotion'] | ($board[$_POST['toRow']][$_POST['toCol']] & BLACK);
 		saveGame();
-	}
-	elseif (($_POST['fromRow'] != "") && ($_POST['fromCol'] != "") && ($_POST['toRow'] != "") && ($_POST['toCol'] != ""))
+	} 
+	elseif (
+		isset($_POST['fromRow']) && isset($_POST['fromCol']) && isset($_POST['toRow']) && isset($_POST['toCol'])
+		&& ('' !== $_POST['fromRow']) && ('' !== $_POST['fromCol']) && ('' !== $_POST['toRow']) && ('' !== $_POST['toCol'])
+	) // END elseif
 	{
 		/* ensure it's the current player moving				 */
 		/* NOTE: if not, this will currently ignore the command...               */
@@ -123,7 +128,7 @@
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta http-equiv="pragma" content="no-cache" />
 <meta http-equiv="Page-Exit" content="blendTrans(Duration=0.18)">
 <link rel="stylesheet" href="chess.css" type="text/css" />
@@ -139,11 +144,11 @@
 		$isPlayersTurn = false;
 
 	if ($_SESSION['isSharedPC'])
-		echo("<title>WebChess</title>\n");
+		echo '<title>', APP_NAME, "</title>\n";
 	else if ($isPlayersTurn)
-		echo("<title>WebChess - Your Move</title>\n");
+		echo '<title>', APP_NAME . gettext(' - Your Move'), "</title>\n";
 	else
-		echo("<title>WebChess - Opponent's Move</title>\n");
+		echo '<title>', APP_NAME . gettext(" - Opponent's Move"), "</title>\n";
 ?>
 <script type="text/javascript">
 <?php
@@ -169,13 +174,27 @@
 	echo 'var isKingInCheck = "'.$isInCheck. "\";\n";
 	echo 'var isGameOver = "'.$isGameOver. "\";\n";
 	echo 'var historyLayout = "'.$_SESSION['pref_historylayout']. "\";\n";
-
+?>
+	// I18n Messages. The translation lang is set in I18N_LOCALE and requires you to have the matching webchess.mo 
+	var i18nMessages = {
+		"Start of game": "<?php echo gettext('Start of game'); ?>"
+		,"Start": "<?php echo gettext('Start'); ?>"
+		,"Go back five halfmoves": "<?php echo gettext('Go back five halfmoves'); ?>"
+		,"Go back one halfmove": "<?php echo gettext('Go back one halfmove'); ?>"
+		,"Go forward one halfmove": "<?php echo gettext('Go forward one halfmove'); ?>"
+		,"Go forward five halfmoves": "<?php echo gettext('Go forward five halfmoves'); ?>"
+		,"End of game": "<?php echo gettext('End of game'); ?>"
+		,"End": "<?php echo gettext('End'); ?>"
+	};
+<?php
+	
 	writeStatus();
 	writeHistory();
 	// Captured pieces..
 	require 'capt.php';
 ?>
 </script>
+<script type="text/javascript" src="javascript/domready.js"></script>
 <script type="text/javascript" src="javascript/chessutils.js"></script>
 <script type="text/javascript" src="javascript/commands.js"></script>
 <script type="text/javascript" src="javascript/validation.js"></script>
@@ -192,7 +211,7 @@ if(!isBoardDisabled() || $_SESSION['isSharedPC'])
 <body>
 <div id="wrapper">
 	<div id="header">
-	  <div id="heading">WebChess</div>
+	  <div id="heading"><?php echo APP_NAME; ?></div>
 	</div>
     <?php require 'info.php'; ?>
 	<div id="boardsection" align="center">
@@ -218,16 +237,16 @@ if(!isBoardDisabled() || $_SESSION['isSharedPC'])
 		<input type="hidden" name="requestUndo" value="no" />
 		<input type="hidden" name="requestDraw" value="no" />
 		<input type="hidden" name="resign" value="no" />
-		<input type="hidden" name="fromRow" value="<?php if (isPromoting) echo ($_POST['fromRow']); ?>" />
-		<input type="hidden" name="fromCol" value="<?php if (isPromoting) echo ($_POST['fromCol']); ?>" />
-		<input type="hidden" name="toRow" value="<?php if (isPromoting) echo ($_POST['toRow']); ?>" />
-		<input type="hidden" name="toCol" value="<?php if (isPromoting) echo ($_POST['toCol']); ?>" />
+		<input type="hidden" name="fromRow" value="<?php if ($isPromoting) echo ($_POST['fromRow']); ?>" />
+		<input type="hidden" name="fromCol" value="<?php if ($isPromoting) echo ($_POST['fromCol']); ?>" />
+		<input type="hidden" name="toRow" value="<?php if ($isPromoting) echo ($_POST['toRow']); ?>" />
+		<input type="hidden" name="toCol" value="<?php if ($isPromoting) echo ($_POST['toCol']); ?>" />
 		<input type="hidden" name="isInCheck" value="false" />
 		<input type="hidden" name="isCheckMate" value="false" />
 		</form>
 		<div id="gamenav"></div>
-		<div>When castling, just move the king (the rook will move automatically).</div>
-		<div id="captheading">Captured pieces</div>
+		<div><?echo gettext('When castling, just move the king (the rook will move automatically).');?></div>
+		<div id="captheading"><?echo gettext('Captured pieces'); ?></div>
 		<div id="captures"></div>
 	</div>
 
@@ -245,10 +264,7 @@ if(!isBoardDisabled() || $_SESSION['isSharedPC'])
 		<input type="hidden" name="ToDo" value="Logout" />	<!-- NOTE: this field is only used to Logout -->
 		</form>
 	</div>
-
-	<div id="footer">
-		<p><a href="http://webchess.sourceforge.net/">WebChess</a> is Free Software released under the GNU General Public License (GPL).</p>
-	</div>
+	<?php include_once('footer.php'); ?>
 </div>
 </body>
 </html>

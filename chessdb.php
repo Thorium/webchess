@@ -1,5 +1,5 @@
 <?php 
-// $Id: chessdb.php,v 1.10 2010/08/14 16:57:54 sandking Exp $
+// $Id: chessdb.php,v 1.11 2013/12/07 20:00:00 gitjake Exp $
 
 /*
     This file is part of WebChess. http://webchess.sourceforge.net
@@ -53,6 +53,7 @@
 	function savePromotion()
 	{
 		global $CFG_TABLE;
+		global $CFG_USEEMAILNOTIFICATION;
 		global $history, $numMoves, $isInCheck;
 
 		/* old PHP versions don't have _POST, _GET and _SESSION as auto_globals */
@@ -282,10 +283,9 @@
 		if (!minimum_version("4.1.0"))
 			global $_POST, $_GET, $_SESSION;
 		
-		/* clear old data */
-		mysql_query("DELETE FROM " . $CFG_TABLE[pieces] . " WHERE gameID = ".$_SESSION['gameID']);
 
 		/* save new game data */
+		$values = array(); // insert values
 		/* for each row... */
 		for ($i = 0; $i < 8; $i++)
 		{
@@ -302,10 +302,13 @@
 						$tmpColor = "white";
 
 					$tmpPiece = getPieceName($board[$i][$j]);
-					mysql_query("INSERT INTO " . $CFG_TABLE[pieces] . " (gameID, color, piece, row, col) VALUES (".$_SESSION['gameID'].", '$tmpColor', '$tmpPiece', $i, $j)");
+					$values[] = '('.$_SESSION['gameID'].", '$tmpColor', '$tmpPiece', $i, $j)";
 				}
 			}
 		}
+		/* clear old data */
+		mysql_query("DELETE FROM " . $CFG_TABLE[pieces] . " WHERE gameID = ".$_SESSION['gameID']);
+		mysql_query("INSERT INTO " . $CFG_TABLE[pieces] . ' (gameID, color, piece, row, col) VALUES ' . implode(',', $values));
 
 		/* update lastMove timestamp */
 		updateTimestamp();
@@ -354,7 +357,7 @@
 			echo("Processing user generated (ie: form) messages...<br>\n");
 
 		/* queue a request for an undo */
-		if ($_POST['requestUndo'] == "yes")
+		if (isset($_POST['requestUndo']) && ($_POST['requestUndo'] == "yes")) 
 		{
 			/* if the two players are on the same system, execute undo immediately */
 			/* NOTE: assumes the two players discussed it live before undoing */
@@ -371,7 +374,7 @@
 		}
 		
 		/* queue a request for a draw */
-		if ($_POST['requestDraw'] == "yes")
+		if (isset($_POST['requestDraw']) && ($_POST['requestDraw'] == "yes"))
 		{
 			/* if the two players are on the same system, execute Draw immediately */
 			/* NOTE: assumes the two players discussed it live before declaring the game a draw */
@@ -431,7 +434,7 @@
 		}
 		
 		/* resign the game */
-		if ($_POST['resign'] == "yes")
+		if (isset($_POST['resign']) && ($_POST['resign'] == "yes"))
 		{
 			$tmpQuery = "UPDATE " . $CFG_TABLE[games] . " SET gameMessage = 'playerResigned', messageFrom = '".$currentPlayer."' WHERE gameID = ".$_SESSION['gameID'];
 			mysql_query($tmpQuery);
@@ -535,7 +538,7 @@
 		
 		/* game level status: draws, resignations and checkmate */
 		/* if checkmate, update games table */
-		if ($_POST['isCheckMate'] == 'true')
+		if (isset($_POST['isCheckMate']) && ($_POST['isCheckMate'] == 'true'))
 			mysql_query("UPDATE " . $CFG_TABLE[games] . " SET gameMessage = 'checkMate', messageFrom = '".$currentPlayer."' WHERE gameID = ".$_SESSION['gameID']);
                         // ToDo: Mail checkmate notification to opponent
 
