@@ -20,6 +20,14 @@
     along with WebChess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+	// If the user is already logged in then go to main menu
+	// Note that a logout sets the Session playerID to -1
+	session_start();
+	if (isset($_SESSION['playerID']) && $_SESSION['playerID'] > 0) {
+		header( "Location: {$CFG_MAINPAGE}/mainmenu.php", true, 303 /*redirect*/ ) ;
+	}
+	
+	
 	/* load settings */
 	if (!isset($_CONFIG)) {
 		require 'config.php';
