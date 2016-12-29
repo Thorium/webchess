@@ -143,8 +143,10 @@
 			/* no break, login user */
 
 		case 'Login':
+			//shall we sanitize user input first??
+			$c_txtNick = mysqli_real_escape_string(_POST['txtNick']);
 			/* check for a player with supplied nick and password */
-			$tmpQuery = "SELECT * FROM " . $CFG_TABLE[players] . " WHERE nick = '".$_POST['txtNick']."' AND password = '".md5($_POST['pwdPassword'])."'";
+			$tmpQuery = "SELECT * FROM " . $CFG_TABLE[players] . " WHERE nick = '".$c_txtNick."' AND password = '".md5($_POST['pwdPassword'])."'";
 			$tmpPlayers = mysql_query($tmpQuery);
             if (!$tmpPlayers) echo mysql_errno() . ": " . mysql_error() . "\n<br><br>";
 			$tmpPlayer = mysql_fetch_array($tmpPlayers, MYSQL_ASSOC);
