@@ -44,13 +44,13 @@
 	/* NOTE: in chessutils.php a line is commented containing:
 	$headers .= "To: ".$msgTo."\r\n";
 	Some MTAs may require for you to uncomment such line. Do so if mail notification doesn't work */
-	$CFG_USEEMAILNOTIFICATION = false;	/* SMTP operations.  This flag allows you to easily activate
-						   or deactivate this feature.  It is highly recommended you test
-						   it before putting it into production */
-						/* email address people see when receiving WebChess generated mail */
-	$CFG_MAILADDRESS = "WebChess@webchess.org";
+
+	/* SMTP operations.  This flag allows you to easily activate or deactivate this feature.  It is highly recommended you test it before putting it into production */
+	$CFG_USEEMAILNOTIFICATION = $CFG_USEEMAILNOTIFICATION ?? false;
+	/* email address people see when receiving WebChess generated mail */
+	$CFG_MAILADDRESS = $CFG_MAILADDRESS ?? "WebChess@webchess.org";
 	/* This URL is displayed in the email notices */
-	$CFG_MAINPAGE = "https://github.com/thorium/webchess";
+	$CFG_MAINPAGE = $CFG_MAINPAGE ?? "https://github.com/thorium/webchess";
 
 	$CFG_MAXUSERS = 5000;
 	$CFG_MAXACTIVEGAMES = 10000;
@@ -61,11 +61,11 @@
 	/* Application constants */
 	define('APP_NAME', 'WebChess'); // The name of the app that is shown in the title
 	define('APP_VERSION', '1.0.4'); // The version of the app
-	
+
 	/* I18N constants */
 	define('I18N_GETTEXT_SUPPORT', false); // enable gettext for fetching translations
 	define('I18N_LOCALE', 'de_DE'); // locale to use (requires the webchess.mo file for the locale)
-	
+
 	/* mysql table names */
 	define('communication', 'communication');
 	define('history', 'history');
@@ -74,12 +74,12 @@
 	define('pieces', 'pieces');
 	define('preferences', 'preferences');
 	define('players', 'players');
-	
+
 	/* mysql table names
 	   Change these if your database needs different table names */
 	// These definitions are a quick fix for the CFG_TABLE constants
 
-	
+
 	$CFG_TABLE[communication] = "communication";
 	$CFG_TABLE[games] = "games";
 	$CFG_TABLE[history] = "history";

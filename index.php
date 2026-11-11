@@ -28,8 +28,14 @@
 	// If the user is already logged in then go to main menu
 	// Note that a logout sets the Session playerID to -1
 	secure_session_start();
+	/* keep a requested game (mainmenu.php?game=<gameID>) across the login */
+	$gameQuery = '';
+	if (isset($_GET['game']) && is_string($_GET['game']) && ctype_digit($_GET['game'])) {
+		$gameQuery = '?game=' . (int)$_GET['game'];
+	}
+
 	if (isset($_SESSION['playerID']) && $_SESSION['playerID'] > 0) {
-		header('Location: mainmenu.php', true, 303 /*redirect*/);
+		header('Location: mainmenu.php' . $gameQuery, true, 303 /*redirect*/);
 		exit();
 	}
 	?>
@@ -86,7 +92,7 @@ window.onload = function()
 <div id="ctr" align="center">
 	<div class="login">
 		<div class="login-form">
-			<form name="loginForm" id="loginForm" method="post" action="mainmenu.php">
+			<form name="loginForm" id="loginForm" method="post" action="mainmenu.php<?php echo h($gameQuery); ?>">
 				<div class="form-block">
                                         <div class="inputlabel"><?php echo gettext("Username");?></div>
 					<div><input id="txtNick" name="txtNick" type="text" class="inputbox" size="15" /></div>
