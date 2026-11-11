@@ -42,6 +42,14 @@
 
 	/* connect to database */
 	require 'connectdb.php';
+
+	/* same viewing rule as chess.php */
+	if (!isset($_SESSION['gameID']) || !canViewGame($_SESSION['gameID']))
+	{
+		http_response_code(403);
+		die('Not authorized for this game.');
+	}
+
 	/* load game */
 
 $output_file = 'game'.$_SESSION['gameID'].'.pgn';

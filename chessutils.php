@@ -49,6 +49,30 @@
 		}
 	}
 
+	/* True if the logged-in player may view $gameID: players see their own
+	   games; others see finished games only with the replay-all preference,
+	   matching the finished-games list in mainmenu.php. */
+	function canViewGame($gameID)
+	{
+		global $CFG_TABLE;
+
+		$playerID = (int)($_SESSION['playerID'] ?? -1);
+		$gameID = filter_var($gameID, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+		if ($gameID === false || $playerID <= 0)
+			return false;
+
+		$game = db_row("SELECT whitePlayer, blackPlayer, gameMessage FROM " . $CFG_TABLE[games] . " WHERE gameID = ?", [$gameID]);
+		if ($game === null)
+			return false;
+
+		if ($game['whitePlayer'] == $playerID || $game['blackPlayer'] == $playerID)
+			return true;
+
+		$isFinished = !in_array((string)$game['gameMessage'], ['', 'playerInvited', 'inviteDeclined'], true);
+		$isReplayAll = ($_SESSION['pref_replayall'] ?? '') == 'true';
+		return $isFinished && $isReplayAll;
+	}
+
 	/* these are utility functions used by other functions */
 	function getPieceName($piece)
 	{

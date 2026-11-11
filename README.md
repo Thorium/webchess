@@ -120,8 +120,17 @@ See `docs/INSTALL-MySQL.txt` for full installation instructions.
    variables or `config.local.php` (see *Configuration* above). After upgrading,
    `config.php` no longer contains them.
 
-3. **PHP 8.1+ with `pdo_mysql` is now required.** The old `mysql_*` extension is
+3. **PHP 8.2+ with `pdo_mysql` is now required.** The old `mysql_*` extension is
    no longer used and PHP 5/7‑only deployments are no longer supported.
+   Run at least 8.2.35, 8.3.36, 8.4.27 or 8.5.12: older builds have the
+   unauthenticated RCE flaws CVE-2026-109618 and CVE-2026-109619 ("PHP2Shell"),
+   and PHP 8.1 gets no fix. WebChess takes no file uploads, so also set these in
+   `php.ini` or the FPM pool (not `.user.ini` or `ini_set()`):
+
+   ```ini
+   session.upload_progress.enabled = 0
+   post_max_size = 8M
+   ```
 
 4. **Remove the installer scripts after install.** `install.php` and
    `makeConfig.php` are now disabled by default and only run when the

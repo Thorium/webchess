@@ -44,13 +44,27 @@
 
 	/* check if loading game */
 	if (isset($_POST['gameID']))
-		$_SESSION['gameID'] = $_POST['gameID'];
+	{
+		if (!is_string($_POST['gameID']) || !ctype_digit($_POST['gameID']))
+		{
+			http_response_code(400);
+			die('Invalid game.');
+		}
+		$_SESSION['gameID'] = (int)$_POST['gameID'];
+	}
 
 	/* debug flag */
 	define ("DEBUG", 0);
 
 	/* connect to database */
 	require 'connectdb.php';
+
+	/* only players, or replay-all viewers of finished games, may open a game */
+	if (!isset($_SESSION['gameID']) || !canViewGame($_SESSION['gameID']))
+	{
+		http_response_code(403);
+		die('Not authorized for this game.');
+	}
 
 	/* get White's nick */
 	$whiteNick = db_value("SELECT nick FROM " . $CFG_TABLE[players] . ", " . $CFG_TABLE[games] . " WHERE playerID = whitePlayer AND gameID = ?", [$_SESSION['gameID']]);

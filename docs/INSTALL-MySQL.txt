@@ -107,7 +107,10 @@ to version control). Instead, provide them in one of two ways:
   And that's it!  You should be able to create a new user now!
 
   SECURITY NOTES (modernized release):
-   - Requires PHP 8.1+ and the PDO MySQL driver (pdo_mysql).
+   - Requires PHP 8.2+ and the PDO MySQL driver (pdo_mysql). Run at least
+     8.2.35, 8.3.36, 8.4.27 or 8.5.12 (fixes CVE-2026-109618/109619), and set
+     session.upload_progress.enabled = 0 and post_max_size = 8M in php.ini or
+     the FPM pool.
    - All database access uses PDO prepared statements (no SQL injection).
    - Passwords are stored with password_hash()/bcrypt. Existing md5 password
      hashes keep working and are transparently upgraded on the user's next

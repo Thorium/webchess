@@ -68,6 +68,12 @@
 		db_query("DELETE FROM " . $CFG_TABLE[games] . " WHERE gameID = ?", [$tmpOldGame['gameID']]);
 	}
 
+	/* direct link to a game: mainmenu.php?game=<gameID> */
+	$directGameID = null;
+	if (isset($_GET['game']) && is_string($_GET['game']) && (int)$_GET['game'] > 0) {
+		$directGameID = (int)$_GET['game'];
+	}
+
 	$tmpNewUser = false;
 	$errMsg = "";
 	$postTodo = '';
@@ -168,7 +174,9 @@
                 if (isset($tmpPlayer['userlevel']) && $tmpPlayer['userlevel'] == "(Master)")$_SESSION['userLevel'] =  '5';
 			}
 			else {
-				echo "<script>alert('Invalid Nick or Password. Please try again'); window.location.replace('index.php');</script>\n";
+				/* keep the linked game for the next login attempt */
+				$loginPage = 'index.php' . ($directGameID !== null ? '?game=' . $directGameID : '');
+				echo "<script>alert('Invalid Nick or Password. Please try again'); window.location.replace('" . $loginPage . "');</script>\n";
 				exit();
 			}
 
@@ -317,8 +325,8 @@
 				db_query("UPDATE " . $CFG_TABLE[games] . " SET gameMessage = '', messageFrom = '' WHERE gameID = ?", [$_POST['gameID']]);
 
 				/* setup new board */
-				$_SESSION['gameID'] = $_POST['gameID'];
-				createNewGame($_POST['gameID']);
+				$_SESSION['gameID'] = (int)$_POST['gameID'];
+				createNewGame($_SESSION['gameID']);
 				saveGame();
 			}
 			else
@@ -483,12 +491,6 @@
 
 	}
 
-	/* direct link to a game: mainmenu.php?game=<gameID> */
-	$directGameID = null;
-	if (isset($_GET['game']) && is_string($_GET['game']) && (int)$_GET['game'] > 0) {
-		$directGameID = (int)$_GET['game'];
-	}
-
 	/* Followed a game link without a (still valid) login: send the visitor
 	   to the login page, which brings him back here afterwards. A failed
 	   login attempt (POST) is left to sessioncheck.php as usual. */
@@ -505,22 +507,12 @@
 	$_SESSION['isSharedPC'] = false;
 
 	if ($directGameID !== null) {
-		$directGame = db_row("SELECT whitePlayer, blackPlayer, gameMessage FROM " . $CFG_TABLE[games] . " WHERE gameID = ?", [$directGameID]);
-		$directGameMessage = ($directGame === null) ? '' : (string)$directGame['gameMessage'];
-
-		/* Same rules as the lists below: players may open their own games,
-		   everybody may replay finished games. Other requests are answered
-		   alike, so the link doesn't reveal which game ids exist. */
-		if (
-			$directGame === null
-			|| (
-				$directGameMessage == ''
-				&& $directGame['whitePlayer'] != $_SESSION['playerID']
-				&& $directGame['blackPlayer'] != $_SESSION['playerID']
-			)
-		) {
+		/* Same rules as chess.php (canViewGame). Other requests are answered
+		   alike, so the link doesn't reveal which game ids exist. Only players
+		   can see a game's pending state. */
+		if (!canViewGame($directGameID)) {
 			$errMsg = sprintf(gettext("Game %s does not exist or is not available to you."), $directGameID);
-		} else if ($directGameMessage == 'playerInvited' || $directGameMessage == 'inviteDeclined') {
+		} else if (in_array((string)db_value("SELECT gameMessage FROM " . $CFG_TABLE[games] . " WHERE gameID = ?", [$directGameID]), ['playerInvited', 'inviteDeclined'], true)) {
 			$errMsg = sprintf(gettext("Game %s has not started yet."), $directGameID);
 		} else {
 			/* chess.php picks the game up from the session */
