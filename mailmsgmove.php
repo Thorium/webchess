@@ -33,4 +33,4 @@
 	$termMsg = sprintf(gettext('This message has been automatically been sent by %s and should not be replied to'), APP_NAME);
 	$mailmsg .= "\n\n" . $termMsg . ".\n";
 	
-	$mailmsg .= sprintf(gettext('Go to: %s to play.'), $CFG_MAINPAGE . "mainmenu.php?game=" . $gameID) . "\n";
+	$mailmsg .= sprintf(gettext('Go to: %s to play.'), rtrim($CFG_MAINPAGE, '/') . "/mainmenu.php?game=" . (int)$gameID) . "\n";
