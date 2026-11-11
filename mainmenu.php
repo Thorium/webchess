@@ -483,11 +483,52 @@
 
 	}
 
+	/* direct link to a game: mainmenu.php?game=<gameID> */
+	$directGameID = null;
+	if (isset($_GET['game']) && is_string($_GET['game']) && (int)$_GET['game'] > 0) {
+		$directGameID = (int)$_GET['game'];
+	}
+
+	/* Followed a game link without a (still valid) login: send the visitor
+	   to the login page, which brings him back here afterwards. A failed
+	   login attempt (POST) is left to sessioncheck.php as usual. */
+	if ($directGameID !== null && $postTodo === '' && ($_SESSION['playerID'] == -1 || time() - ($_SESSION['lastInputTime'] ?? 0) >= $CFG_SESSIONTIMEOUT)) {
+		$_SESSION['playerID'] = -1;
+		header('Location: index.php?game=' . $directGameID, true, 303);
+		exit();
+	}
+
 	/* check session status */
 	require 'sessioncheck.php';
 
 	/* set default playing mode to different PCs (as opposed to both players sharing a PC) */
 	$_SESSION['isSharedPC'] = false;
+
+	if ($directGameID !== null) {
+		$directGame = db_row("SELECT whitePlayer, blackPlayer, gameMessage FROM " . $CFG_TABLE[games] . " WHERE gameID = ?", [$directGameID]);
+		$directGameMessage = ($directGame === null) ? '' : (string)$directGame['gameMessage'];
+
+		/* Same rules as the lists below: players may open their own games,
+		   everybody may replay finished games. Other requests are answered
+		   alike, so the link doesn't reveal which game ids exist. */
+		if (
+			$directGame === null
+			|| (
+				$directGameMessage == ''
+				&& $directGame['whitePlayer'] != $_SESSION['playerID']
+				&& $directGame['blackPlayer'] != $_SESSION['playerID']
+			)
+		) {
+			$errMsg = sprintf(gettext("Game %s does not exist or is not available to you."), $directGameID);
+		} else if ($directGameMessage == 'playerInvited' || $directGameMessage == 'inviteDeclined') {
+			$errMsg = sprintf(gettext("Game %s has not started yet."), $directGameID);
+		} else {
+			/* chess.php picks the game up from the session */
+			$_SESSION['gameID'] = $directGameID;
+			header('Location: chess.php', true, 303);
+			exit();
+		}
+	}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
