@@ -30,33 +30,33 @@
 		require __DIR__ . '/config.local.php';
 	}
 
-	$CFG_SERVER   = $CFG_SERVER   ?? getenv('WEBCHESS_DB_HOST') ?: 'localhost';
-	$CFG_USER     = $CFG_USER     ?? getenv('WEBCHESS_DB_USER') ?: 'WebChessUser';
-	$CFG_PASSWORD = $CFG_PASSWORD ?? (getenv('WEBCHESS_DB_PASSWORD') !== false ? getenv('WEBCHESS_DB_PASSWORD') : '');
-	$CFG_DATABASE = $CFG_DATABASE ?? getenv('WEBCHESS_DB_NAME') ?: 'WebChess_DB';
+	$CFG_SERVER   ??= getenv('WEBCHESS_DB_HOST') ?: 'localhost';
+	$CFG_USER     ??= getenv('WEBCHESS_DB_USER') ?: 'WebChessUser';
+	$CFG_PASSWORD ??= (getenv('WEBCHESS_DB_PASSWORD') !== false ? getenv('WEBCHESS_DB_PASSWORD') : '');
+	$CFG_DATABASE ??= getenv('WEBCHESS_DB_NAME') ?: 'WebChess_DB';
 
 
 	/* server settings */
-	$CFG_SESSIONTIMEOUT = 900;		/* session times out if user doesn't interact after 900 secs (15 mins) */
-	$CFG_EXPIREGAME = 90;			/* number of days before untouched games expire */
-	$CFG_MINAUTORELOAD = 10;			/* min number of secs between automatic reloads reloads */
+	$CFG_SESSIONTIMEOUT ??= 900;		/* session times out if user doesn't interact after 900 secs (15 mins) */
+	$CFG_EXPIREGAME ??= 90;			/* number of days before untouched games expire */
+	$CFG_MINAUTORELOAD ??= 10;			/* min number of secs between automatic reloads reloads */
 						/* email notification requires PHP to be properly configured for */
 	/* NOTE: in chessutils.php a line is commented containing:
 	$headers .= "To: ".$msgTo."\r\n";
 	Some MTAs may require for you to uncomment such line. Do so if mail notification doesn't work */
 
 	/* SMTP operations.  This flag allows you to easily activate or deactivate this feature.  It is highly recommended you test it before putting it into production */
-	$CFG_USEEMAILNOTIFICATION = $CFG_USEEMAILNOTIFICATION ?? false;
+	$CFG_USEEMAILNOTIFICATION ??= false;
 	/* email address people see when receiving WebChess generated mail */
-	$CFG_MAILADDRESS = $CFG_MAILADDRESS ?? "WebChess@webchess.org";
+	$CFG_MAILADDRESS ??= "WebChess@webchess.org";
 	/* This URL is displayed in the email notices */
-	$CFG_MAINPAGE = $CFG_MAINPAGE ?? "https://github.com/thorium/webchess";
+	$CFG_MAINPAGE ??= "https://github.com/thorium/webchess";
 
-	$CFG_MAXUSERS = 5000;
-	$CFG_MAXACTIVEGAMES = 10000;
-	$CFG_NICKCHANGEALLOWED = false;		/* whether a user can change their nick from the main menu */
+	$CFG_MAXUSERS ??= 5000;
+	$CFG_MAXACTIVEGAMES ??= 10000;
+	$CFG_NICKCHANGEALLOWED ??= false;		/* whether a user can change their nick from the main menu */
 
-	$CFG_NEW_USERS_ALLOWED = true;
+	$CFG_NEW_USERS_ALLOWED ??= true;
 
 	/* Application constants */
 	define('APP_NAME', 'WebChess'); // The name of the app that is shown in the title
@@ -89,8 +89,8 @@
 	$CFG_TABLE[preferences] = "preferences";
 
 	/* theme settings */
-	$CFG_BOARDSQUARESIZE = 50; /* May be used to resize board size */
-	$CFG_IMAGE_EXT = "png";
+	$CFG_BOARDSQUARESIZE ??= 50; /* May be used to resize board size */
+	$CFG_IMAGE_EXT ??= "png";
 
 	/* shared security helpers (escaping, CSRF, hardened sessions, password
 	   hashing). Loaded here so they are available on every page. */
