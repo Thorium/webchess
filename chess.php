@@ -211,6 +211,14 @@
 	writeJSboard();
 	/* if it's not the player's turn, enable auto-refresh */
 	$autoRefresh = !$isPlayersTurn && !isBoardDisabled() && !$_SESSION['isSharedPC'];
+	/* The opponent's pawn has reached the last row but the promotion piece is
+	   not chosen yet: the halfmove is already counted, so it looks like the
+	   player's turn, yet the board stays disabled until the opponent decides.
+	   Keep polling, otherwise this tab would never learn that the promotion
+	   was completed (and notify.js could never announce the move). */
+	if ($isPromoting && $isPlayersTurn && !$_SESSION['isSharedPC']
+			&& empty($isUndoRequested) && empty($isDrawRequested) && empty($isGameOver))
+		$autoRefresh = true;
 	echo('var autoreload = ');
 	if(!$autoRefresh)
 		echo('0');
@@ -228,6 +236,22 @@
 	echo 'var isKingInCheck = "'.$isInCheck. "\";\n";
 	echo 'var isGameOver = "'.$isGameOver. "\";\n";
 	echo 'var historyLayout = "'.$_SESSION['pref_historylayout']. "\";\n";
+
+	/* desktop notifications when the opponent has moved (see javascript/notify.js).
+	   Pointless on a shared PC, where both players sit at the same screen. */
+	$notifyEnabled = !$_SESSION['isSharedPC'] && isPlayerInGame($_SESSION['gameID'], $_SESSION['playerID']);
+	if ($notifyEnabled)
+	{
+		$opponentNick = ($playersColor == "white") ? $blackNick : $whiteNick;
+		$notifyConfig = [
+			'title' => APP_NAME . gettext(' - Your Move'),
+			'body' => sprintf(gettext('%1$s has made a move in game #%2$d.'), $opponentNick, $_SESSION['gameID']),
+			'msgBlocked' => gettext('Notifications are blocked for this site in your browser settings.'),
+			'msgUnsupported' => gettext('Not available in this browser (notifications need HTTPS).'),
+		];
+		/* the JSON_HEX_* flags keep nicknames from breaking out of the script block */
+		echo 'var wcNotify = ' . json_encode($notifyConfig, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) . ";\n";
+	}
 ?>
 	// I18n Messages. The translation lang is set in I18N_LOCALE and requires you to have the matching webchess.mo 
 	var i18nMessages = {
@@ -263,6 +287,11 @@ if(!isBoardDisabled() || $_SESSION['isSharedPC'])
 <script type="text/javascript" src="javascript/board.js"></script>
 <script type="text/javascript" src="javascript/dnd.js"></script>
 <script type="text/javascript" src="javascript/boardprefs.js"></script>
+<?php
+if($notifyEnabled)
+	echo('<script type="text/javascript" src="javascript/notify.js"></script>
+');
+?>
 </head>
 <body>
 <div id="wrapper">
@@ -316,6 +345,13 @@ if(!isBoardDisabled() || $_SESSION['isSharedPC'])
 					<option value="green"><?php echo gettext("Green"); ?></option>
 				</select>
 			</label>
+			<?php if ($notifyEnabled) { ?>
+			<div id="notify">
+				<label><input type="checkbox" id="notifyToggle" />
+				<?php echo gettext("Notify me when my opponent has moved"); ?></label>
+				<div id="notifyHint" style="font-size:smaller;"></div>
+			</div>
+			<?php } ?>
 		</div>
 		<div id="players" class="move_header"></div>
 		<div id="gameid" class="move_header"></div>
